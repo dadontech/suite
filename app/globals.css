@@ -3,6 +3,21 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --color-bg0: #FFFFFF;
+  --color-bg1: #FFFFFF;
+  --color-bg2: #FFFFFF;
+  --color-bg3: #F1F3F5;
+  --color-bg4: #E9ECEF;
+  --color-border: rgba(107,94,94,0.1);
+  --color-border-hover: rgba(107,94,94,0.2);
+  --color-accent: #F35D2C;
+  --color-accent-dim: rgba(243,93,44,0.15);
+  --color-teal: #006E74;
+  --color-teal-dim: rgba(0,110,116,0.12);
+  --color-text1: #1a1a1a;
+  --color-text2: #6B5E5E;
+  --color-text3: #9B8F8F;
+  --color-text4: #D6D0D0;
 }
 
 @theme inline {
@@ -24,3 +39,45 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.marquee-container {
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-content {
+  display: flex;
+  width: max-content;
+  animation: scroll 30s linear infinite;
+}
+
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+.animate-dash {
+  stroke-dashoffset: 0;
+  animation: dash 20s linear infinite;
+}
+
+@property --angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
