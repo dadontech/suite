@@ -49,7 +49,12 @@ interface GeneratedFunnel {
   video?: VideoData;
 }
 
-const MODELS = ["gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.0-flash"];
+const MODELS = [
+  "gemini-2.5-flash",         // fastest, handles large prompts well
+  "gemini-2.5-pro",            // most capable, use if flash fails
+  "gemini-2.0-flash",          // stable fallback
+  "gemini-1.5-flash",          // last-resort fallback
+];
 const MAX_RETRIES = 3;
 const INITIAL_DELAY = 1000;
 
@@ -345,7 +350,12 @@ OUTPUT: Return ONLY valid JSON. NO markdown fences. NO commentary before or afte
       console.log(`Text: ${modelName}`);
       const model = genAI.getGenerativeModel({ model: modelName });
       try {
-        const text = await generateWithRetry(model, textPrompt);
+        const text = await Promise.race([
+          generateWithRetry(model, textPrompt),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error(`${modelName} timed out after 55s`)), 55000)
+          ),
+        ]);
         const cleaned = text
           .replace(/```json\s*/gi, "")
           .replace(/```\s*/g, "")
@@ -416,24 +426,19 @@ OUTPUT: Return ONLY valid JSON. NO markdown fences. NO commentary before or afte
               }
 
               video.embedUrl = embedUrl;
-
-              // ✅ Use REAL YouTube title
               video.title = validation.title;
             }
           }
         }
 
-        // 🔥 SMART FALLBACK (NO FAKE VIDEO)
         if (!validUrl) {
           const searchQuery = `${productTitle} review`;
-
           video.videoUrl = undefined;
           video.embedUrl = undefined;
           video.searchQuery = searchQuery;
           video.searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
             searchQuery
           )}`;
-
           video.title = `Watch ${productTitle} Training`;
         }
 

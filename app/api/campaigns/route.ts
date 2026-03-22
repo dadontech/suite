@@ -1,7 +1,9 @@
+// app/api/campaigns/route.ts
 import { NextResponse } from 'next/server';
-// import { prisma } from '@/lib/prisma'; // if using Prisma
+import fs from 'fs/promises';
+import path from 'path';
 
-// Define the shape of product information from the analyze API
+// --- Types (match frontend) ---
 interface ProductInfo {
   title?: string;
   description?: string;
@@ -10,7 +12,7 @@ interface ProductInfo {
   imageUrl?: string;
   rating?: number;
   reviewCount?: number;
-  [key: string]: unknown; // allow additional fields
+  [key: string]: unknown;
 }
 
 interface SocialSnippet {
@@ -48,7 +50,8 @@ interface VideoSuggestion {
   url?: string;
 }
 
-interface CampaignRequestBody {
+interface Campaign {
+  id: string;
   link: string;
   keyword: string;
   tone: string;
@@ -60,67 +63,76 @@ interface CampaignRequestBody {
   funnelSteps?: FunnelStep[];
   funnelEmails?: EmailStep[];
   funnelVideo?: VideoSuggestion | null;
+  createdAt: string;
+}
+
+// Path to the JSON file (in project root)
+const CAMPAIGNS_FILE = path.join(process.cwd(), 'campaigns.json');
+
+async function readCampaigns(): Promise<Campaign[]> {
+  try {
+    const data = await fs.readFile(CAMPAIGNS_FILE, 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    return []; // file doesn't exist or empty
+  }
+}
+
+async function writeCampaigns(campaigns: Campaign[]) {
+  await fs.writeFile(CAMPAIGNS_FILE, JSON.stringify(campaigns, null, 2));
 }
 
 export async function POST(req: Request) {
   try {
-    // 1. Parse and validate request body
-    const body = (await req.json()) as CampaignRequestBody;
+    const body = await req.json();
+    console.log('Received campaign payload:', body); // log for debugging
 
-    // Basic required fields check
+    // Basic validation
     if (!body.link || !body.keyword) {
       return NextResponse.json(
-        { error: 'Missing required fields: link and keyword are required' },
+        { error: 'Missing required fields: link and keyword' },
         { status: 400 }
       );
     }
 
-    // 2. (Optional) Add authentication here if needed
-    // Example with NextAuth:
-    // const session = await getServerSession();
-    // if (!session?.user?.id) {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    // }
+    const newCampaign: Campaign = {
+      id: Date.now().toString(),
+      link: body.link,
+      keyword: body.keyword,
+      tone: body.tone || 'Professional',
+      wordCount: body.wordCount || '1,500 words',
+      contentType: body.contentType || 'Product Review',
+      funnelType: body.funnelType || 'bridge',
+      productInfo: body.productInfo,
+      generatedContent: body.generatedContent,
+      funnelSteps: body.funnelSteps,
+      funnelEmails: body.funnelEmails,
+      funnelVideo: body.funnelVideo,
+      createdAt: new Date().toISOString(),
+    };
 
-    // 3. Save to database (example with Prisma, replace with your ORM)
-    // const campaign = await prisma.campaign.create({
-    //   data: {
-    //     link: body.link,
-    //     keyword: body.keyword,
-    //     tone: body.tone,
-    //     wordCount: body.wordCount,
-    //     contentType: body.contentType,
-    //     funnelType: body.funnelType,
-    //     productInfo: body.productInfo,
-    //     generatedContent: body.generatedContent,
-    //     funnelSteps: body.funnelSteps,
-    //     funnelEmails: body.funnelEmails,
-    //     funnelVideo: body.funnelVideo,
-    //     // userId: session.user.id, // link to authenticated user if needed
-    //   },
-    // });
-
-    // 4. Mock response (remove when using real DB)
-    const mockCampaignId = `camp_${Date.now()}`;
+    const campaigns = await readCampaigns();
+    campaigns.unshift(newCampaign);
+    await writeCampaigns(campaigns);
 
     return NextResponse.json({
-      id: mockCampaignId,
+      id: newCampaign.id,
       message: 'Campaign created successfully',
     });
   } catch (error: unknown) {
     console.error('Campaign creation error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
+  }
+}
 
-    // Type-safe error message extraction
-    let errorMessage = 'Internal server error';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    } else if (typeof error === 'string') {
-      errorMessage = error;
-    }
-
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: 500 }
-    );
+export async function GET() {
+  try {
+    const campaigns = await readCampaigns();
+    return NextResponse.json(campaigns);
+  } catch (error: unknown) {
+    console.error('Campaign reading error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
