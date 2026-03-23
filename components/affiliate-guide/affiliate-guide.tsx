@@ -114,7 +114,7 @@ export default function AffiliateGuidePage() {
                         <Quote size={24} fill="white" />
                     </div>
                     <p className="text-xl italic text-[#6B5E5E]/80 mb-8 pt-4">
-                        "I followed this guide step by step. In three months, my site went from zero to $800/month. The niche selection and content tips were gold."
+                        &quot;I followed this guide step by step. In three months, my site went from zero to $800/month. The niche selection and content tips were gold.&quot;
                     </p>
                     <div className="flex items-center justify-center gap-4">
                         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#F35D2C]">
@@ -244,7 +244,7 @@ const chapters = [
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 2: Validate Demand</h4>
         <p className="mb-2">Use tools like Google Trends, Ahrefs Keyword Generator, or Amazon Best Sellers to see if people are searching for your topic.</p>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
-          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah typed "best grain-free dog food" into Google Keyword Planner. It showed 8,000 monthly searches and medium competition – enough demand.
+          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah typed &quot;best grain-free dog food&quot; into Google Keyword Planner. It showed 8,000 monthly searches and medium competition – enough demand.
         </p>
 
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 3: Check Profitability</h4>
@@ -254,9 +254,9 @@ const chapters = [
         </p>
 
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 4: Analyze Competition</h4>
-        <p className="mb-2">Search for your niche + "blog" or "review". If there are established sites, you can learn from them.</p>
+        <p className="mb-2">Search for your niche + &quot;blog&quot; or &quot;review&quot;. If there are established sites, you can learn from them.</p>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
-          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah found three dog food review sites. She studied their top articles, saw they lacked feeding guides, so she created "How Much to Feed Your Dog by Weight" – a unique angle that attracted backlinks.
+          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah found three dog food review sites. She studied their top articles, saw they lacked feeding guides, so she created &quot;How Much to Feed Your Dog by Weight&quot; – a unique angle that attracted backlinks.
         </p>
       </>
     ),
@@ -278,7 +278,7 @@ const chapters = [
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 1: Join Affiliate Networks</h4>
         <p className="mb-2">Sign up for Amazon Associates, ClickBank, ShareASale, or CJ Affiliate. Many have thousands of products.</p>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
-          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah joined Amazon Associates and ClickBank. She quickly found a ClickBank course "Dog Training 101" with a $47 commission per sale and high gravity (meaning it sold well).
+          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah joined Amazon Associates and ClickBank. She quickly found a ClickBank course &quot;Dog Training 101&quot; with a $47 commission per sale and high gravity (meaning it sold well).
         </p>
 
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 2: Evaluate Products</h4>
@@ -289,13 +289,13 @@ const chapters = [
           <li>Vendor reputation – check reviews</li>
         </ul>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
-          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah checked the "Dog Training 101" sales page – it had 4.5 stars on ClickBank, a 60‑day cookie, and a $47 payout. That’s solid.
+          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah checked the &quot;Dog Training 101&quot; sales page – it had 4.5 stars on ClickBank, a 60‑day cookie, and a $47 payout. That’s solid.
         </p>
 
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 3: Use Gravity / Popularity Score</h4>
         <p className="mb-2">On ClickBank, a high gravity means many affiliates are selling it – a sign it converts. For Amazon, look at Best Seller Rank.</p>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
-          <span className="font-bold text-[#F35D2C]">Example:</span> The "Dog Training 101" had a gravity of 150, indicating consistent sales. She also checked Amazon's Best Seller Rank for dog food: brands under #10,000 in Pet Supplies were popular.
+          <span className="font-bold text-[#F35D2C]">Example:</span> The &quot;Dog Training 101&quot; had a gravity of 150, indicating consistent sales. She also checked Amazon&apos;s Best Seller Rank for dog food: brands under #10,000 in Pet Supplies were popular.
         </p>
       </>
     ),
@@ -317,7 +317,7 @@ const chapters = [
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 1: Write Product Reviews</h4>
         <p className="mb-2">Structure: headline, introduction, what the product is, features (with real benefits), pros/cons, personal experience (if any), verdict, and affiliate link.</p>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
-          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah wrote a review of "Dog Training 101". She opened with her dog's behavior issues, explained the course modules, listed pros (clear videos) and cons (no live support), and gave it 4.5 stars. Her affiliate link was in the first paragraph and at the end.
+          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah wrote a review of &quot;Dog Training 101&quot;. She opened with her dog&apos;s behavior issues, explained the course modules, listed pros (clear videos) and cons (no live support), and gave it 4.5 stars. Her affiliate link was in the first paragraph and at the end.
         </p>
 
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 2: Create Comparison Articles</h4>
@@ -333,9 +333,9 @@ const chapters = [
         </p>
 
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 4: Use Clear CTAs</h4>
-        <p className="mb-2">Your affiliate link should appear early and again at the end. Use buttons like "Check Price on Amazon".</p>
+        <p className="mb-2">Your affiliate link should appear early and again at the end. Use buttons like &quot;Check Price on Amazon&quot;.</p>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
-          <span className="font-bold text-[#F35D2C]">Example:</span> In her review, she placed a bright orange button "Get the Course Here" after the intro and again after the verdict. Clicks doubled.
+          <span className="font-bold text-[#F35D2C]">Example:</span> In her review, she placed a bright orange button &quot;Get the Course Here&quot; after the intro and again after the verdict. Clicks doubled.
         </p>
       </>
     ),
@@ -356,12 +356,12 @@ const chapters = [
         
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Option A: SEO</h4>
         <ul className="list-disc pl-6 mb-2">
-          <li>Target long‑tail keywords (e.g., "best wireless earbuds for running")</li>
+          <li>Target long‑tail keywords (e.g., &quot;best wireless earbuds for running&quot;)</li>
           <li>Optimize your page titles, meta descriptions, and headings</li>
           <li>Build backlinks by guest posting or reaching out to other sites</li>
         </ul>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
-          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah wrote a post targeting "best dog food for allergies". She used the exact keyword in the title, H1, and first paragraph. After six months, the post ranked #3 on Google and brought 2,000 monthly visitors.
+          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah wrote a post targeting &quot;best dog food for allergies&quot;. She used the exact keyword in the title, H1, and first paragraph. After six months, the post ranked #3 on Google and brought 2,000 monthly visitors.
         </p>
 
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Option B: Pinterest</h4>
@@ -373,7 +373,7 @@ const chapters = [
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Option C: Email Marketing</h4>
         <p className="mb-2">Offer a freebie (e.g., checklist) in exchange for email addresses. Then send them new articles and product recommendations.</p>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
-          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah created a "Dog Feeding Cheat Sheet" PDF. 300 people signed up in two months. She sent a weekly newsletter featuring her latest reviews, generating consistent clicks.
+          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah created a &quot;Dog Feeding Cheat Sheet&quot; PDF. 300 people signed up in two months. She sent a weekly newsletter featuring her latest reviews, generating consistent clicks.
         </p>
       </>
     ),
@@ -395,11 +395,11 @@ const chapters = [
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 1: A/B Test Headlines</h4>
         <p className="mb-2">Try different headlines on your best‑performing post and see which gets more clicks.</p>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
-          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah changed "Dog Training 101 Review" to "I Tried Dog Training 101 for 30 Days – Here's What Happened". Clicks increased by 35%.
+          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah changed &quot;Dog Training 101 Review&quot; to &quot;I Tried Dog Training 101 for 30 Days – Here&apos;s What Happened&quot;. Clicks increased by 35%.
         </p>
 
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 2: Use Heatmaps</h4>
-        <p className="mb-2">Tools like Hotjar show where users click. If they aren't clicking your links, move them higher.</p>
+        <p className="mb-2">Tools like Hotjar show where users click. If they aren&apos;t clicking your links, move them higher.</p>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
           <span className="font-bold text-[#F35D2C]">Example:</span> Hotjar revealed most readers scrolled only halfway. She moved her affiliate button to the top and saw a 50% increase in clicks.
         </p>
@@ -407,7 +407,7 @@ const chapters = [
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 3: Add Trust Elements</h4>
         <p className="mb-2">Display security badges, money‑back guarantees, or real user testimonials.</p>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
-          <span className="font-bold text-[#F35D2C]">Example:</span> She added a "30‑Day Money‑Back Guarantee" badge near her affiliate link. Conversion rate went from 2.1% to 2.8%.
+          <span className="font-bold text-[#F35D2C]">Example:</span> She added a &quot;30‑Day Money‑Back Guarantee&quot; badge near her affiliate link. Conversion rate went from 2.1% to 2.8%.
         </p>
 
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 4: Speed Up Your Site</h4>
@@ -430,7 +430,7 @@ const chapters = [
     summary: "Expand by outsourcing and creating more content.",
     content: (
       <>
-        <p className="mb-4">When you have a profitable model, it's time to scale.</p>
+        <p className="mb-4">When you have a profitable model, it&apos;s time to scale.</p>
         
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 1: Hire Writers</h4>
         <p className="mb-2">Use platforms like Upwork or Fiverr to commission new articles. Provide them with your template and keywords.</p>
@@ -453,7 +453,7 @@ const chapters = [
         <h4 className="font-bold text-[#6B5E5E] mt-6 mb-2">Step 4: Create Your Own Product</h4>
         <p className="mb-2">Once you have an audience, you can create a course or ebook – 100% profit.</p>
         <p className="text-sm bg-[#006E74]/5 p-3 rounded-xl border border-[#006E74]/10 mb-4">
-          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah created a $27 ebook "The Complete Guide to Raw Feeding for Dogs" and promoted it to her email list. She sold 200 copies in the first month – $5,400 profit.
+          <span className="font-bold text-[#F35D2C]">Example:</span> Sarah created a $27 ebook &quot;The Complete Guide to Raw Feeding for Dogs&quot; and promoted it to her email list. She sold 200 copies in the first month – $5,400 profit.
         </p>
       </>
     ),

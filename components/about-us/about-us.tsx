@@ -97,7 +97,7 @@ export default function AboutPage() {
               ABOUT <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F35D2C] to-[#006E74]">AMSUITE.</span>
             </h1>
             <p className="text-lg text-[#6B5E5E]/70 max-w-3xl mx-auto leading-relaxed">
-              We're on a mission to empower affiliates with AI‑powered tools that turn links into revenue – without the technical headaches. No coding, no writing, no guesswork.
+              We&apos;re on a mission to empower affiliates with AI‑powered tools that turn links into revenue – without the technical headaches. No coding, no writing, no guesswork.
             </p>
           </motion.div>
         </section>
@@ -208,7 +208,7 @@ export default function AboutPage() {
                 <p className="text-[#006E74] font-medium text-sm mb-3 uppercase tracking-widest">{f.role}</p>
                 <p className="text-[#6B5E5E]/70 text-xs mb-4 px-4">{f.bio}</p>
                 <div className="h-px w-12 bg-[#F35D2C]/20 mx-auto mb-4" />
-                <p className="text-[#6B5E5E]/60 text-sm italic px-6 leading-relaxed">"{f.quote}"</p>
+                <p className="text-[#6B5E5E]/60 text-sm italic px-6 leading-relaxed">&quot;{f.quote}&quot;</p>
               </motion.div>
             ))}
           </div>

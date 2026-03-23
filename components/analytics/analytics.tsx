@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useState } from 'react';
 import {
@@ -8,6 +8,7 @@ import {
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis,
   CartesianGrid, Tooltip, ResponsiveContainer,
+  TooltipContentProps, // ✅ import the correct type
 } from 'recharts';
 
 const areaData = [
@@ -35,24 +36,28 @@ const campaigns = [
 ];
 
 /* ── Tooltips ── */
-const RevenueTooltip = ({ active, payload, label }) => {
+// ✅ Use TooltipContentProps<number, string> to match Recharts' tooltip payload
+const RevenueTooltip = ({ active, payload, label }: TooltipContentProps<number, string>) => {
   if (!active || !payload?.length) return null;
+  // payload[0].value is the revenue value
   return (
     <div className="bg-white border border-[#006E74]/20 rounded-xl px-3 py-2 shadow-lg text-xs">
       <p className="font-bold text-[#6B5E5E] mb-0.5">{label}</p>
-      <p className="text-[#F35D2C] font-semibold">Revenue: ${payload[0].value.toLocaleString()}</p>
+      <p className="text-[#F35D2C] font-semibold">
+        Revenue: ${payload[0].value?.toLocaleString()}
+      </p>
     </div>
   );
 };
 
-const BarTooltip = ({ active, payload, label }) => {
+const BarTooltip = ({ active, payload, label }: TooltipContentProps<number, string>) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-white border border-[#006E74]/20 rounded-xl px-3 py-2 shadow-lg text-xs">
       <p className="font-bold text-[#6B5E5E] mb-1">{label}</p>
       {payload.map(p => (
         <p key={p.dataKey} className="font-semibold" style={{ color: p.color }}>
-          {p.dataKey === 'clicks' ? 'Clicks' : 'Conversions'}: {p.value.toLocaleString()}
+          {p.dataKey === 'clicks' ? 'Clicks' : 'Conversions'}: {p.value?.toLocaleString()}
         </p>
       ))}
     </div>
@@ -60,7 +65,15 @@ const BarTooltip = ({ active, payload, label }) => {
 };
 
 /* ── Stat Card ── */
-const StatCard = ({ title, value, trend, icon, iconBg }) => (
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  trend: string;
+  icon: React.ReactElement<{ size?: number }>;
+  iconBg: string;
+}
+
+const StatCard = ({ title, value, trend, icon, iconBg }: StatCardProps) => (
   <div className="bg-white p-3 xs:p-4 sm:p-5 rounded-2xl border border-[#006E74]/10 hover:border-[#F35D2C]/30 transition-colors">
     <div className="flex justify-between items-start mb-2 sm:mb-3">
       <span className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-[#6B5E5E]/50 tracking-tight uppercase leading-snug pr-2">
@@ -85,7 +98,7 @@ const AnalyticsDashboard = () => {
   return (
     <div className="min-h-screen bg-white">
       <div className="max-w-screen-2xl mx-auto px-3 xs:px-4 md:px-8 py-3 xs:py-4 md:py-8 pb-24 md:pb-8 space-y-3 xs:space-y-4 sm:space-y-5">
-        {/* ── Header ── */}
+        {/* Header */}
         <header className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
           <div>
             <h1 className="text-xl xs:text-2xl sm:text-3xl font-bold tracking-tight text-[#6B5E5E]">Analytics</h1>
@@ -121,7 +134,7 @@ const AnalyticsDashboard = () => {
           </div>
         </header>
 
-        {/* ── Stats Grid ── */}
+        {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 xs:gap-3 sm:gap-4">
           <StatCard title="Total Revenue"    value="$19,720" trend="+23.5%" icon={<DollarSign />}    iconBg="bg-[#F35D2C]/10 text-[#F35D2C]" />
           <StatCard title="Total Clicks"     value="51,600"  trend="+18.2%" icon={<Eye />}           iconBg="bg-[#006E74]/10 text-[#006E74]"   />
@@ -129,7 +142,7 @@ const AnalyticsDashboard = () => {
           <StatCard title="Avg. CVR"         value="1.15%"   trend="+0.12%" icon={<TrendingUp />}   iconBg="bg-[#006E74]/10 text-[#006E74]" />
         </div>
 
-        {/* ── Charts ── */}
+        {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 xs:gap-4 sm:gap-5">
 
           {/* Revenue Area Chart */}
@@ -161,7 +174,8 @@ const AnalyticsDashboard = () => {
                     axisLine={false} tickLine={false} width={30}
                     tick={{ fill: '#6B5E5E', fontSize: 9 }}
                   />
-                  <Tooltip content={<RevenueTooltip />} />
+                  {/* Use the tooltip component directly, no cast needed */}
+                  <Tooltip content={RevenueTooltip} />
                   <Area
                     type="monotone" dataKey="revenue"
                     stroke="#F35D2C" strokeWidth={2}
@@ -201,7 +215,8 @@ const AnalyticsDashboard = () => {
                     axisLine={false} tickLine={false} width={30}
                     tick={{ fill: '#6B5E5E', fontSize: 9 }}
                   />
-                  <Tooltip content={<BarTooltip />} />
+                  {/* ✅ Use the tooltip component directly */}
+                  <Tooltip content={BarTooltip} />
                   <Bar dataKey="clicks" fill="#F35D2C" radius={[4,4,0,0]} maxBarSize={18} />
                   <Bar dataKey="conv"   fill="#006E74" radius={[4,4,0,0]} maxBarSize={18} />
                 </BarChart>
@@ -210,7 +225,7 @@ const AnalyticsDashboard = () => {
           </div>
         </div>
 
-        {/* ── Top Campaigns ── */}
+        {/* Top Campaigns */}
         <section className="bg-white border border-[#006E74]/10 rounded-2xl overflow-hidden">
           <div className="p-3 xs:p-4 sm:p-5 border-b border-[#006E74]/10 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
             <div>
