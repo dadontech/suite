@@ -172,7 +172,7 @@ export default function PartnersPage() {
           </motion.div>
           
           <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="bg-[#006E74] rounded-[40px] p-10 text-white shadow-2xl shadow-[#006E74]/30">
-            <p className="text-2xl italic mb-10 leading-relaxed">"Partnering with Amsuite has been a game‑changer for our agency. Our clients love the results."</p>
+            <p className="text-2xl italic mb-10 leading-relaxed">&quot;Partnering with Amsuite has been a game‑changer for our agency. Our clients love the results.&quot;</p>
             <div className="flex items-center gap-4">
               <img src="https://i.pravatar.cc/150?u=6" alt="Jessica Miller" className="w-16 h-16 rounded-full border-4 border-white/20" />
               <div>
@@ -189,7 +189,7 @@ export default function PartnersPage() {
             <div className="relative z-10">
               <h2 className="text-5xl font-black text-white mb-6 tracking-tighter">Become a partner</h2>
               <p className="text-white/80 mb-10 max-w-lg mx-auto text-lg">
-                Let's talk about how we can grow together.
+                Let&apos;s talk about how we can grow together.
               </p>
               <Link
                 href="#"

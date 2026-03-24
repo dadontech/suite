@@ -15,8 +15,21 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+// ✅ Define the Template type
+interface Template {
+  id: number;
+  name: string;
+  description: string;
+  category: string;
+  popularity: number;
+  timeToEdit: string;
+  usedBy: string;
+  premium: boolean;
+  image: string;
+}
+
 // 1. NINE BLOG TEMPLATES WITH RELIABLE UNSPLASH IMAGES
-const templates = [
+const templates: Template[] = [
   {
     id: 1,
     name: "PRODUCT REVIEW PRO",
@@ -211,7 +224,8 @@ export default function BlogTemplatesPage() {
   );
 }
 
-function TemplateCard({ template }: { template: any }) {
+// ✅ Replace any with proper type
+function TemplateCard({ template }: { template: Template }) {
   const [imgError, setImgError] = useState(false);
 
   return (

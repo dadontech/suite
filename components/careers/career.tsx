@@ -45,7 +45,7 @@ export default function UltimateCareers() {
 
             <div className="grid md:grid-cols-2 gap-12 items-end">
               <p className="text-xl md:text-2xl text-[#6B5E5E]/50 max-w-md font-light leading-relaxed">
-                We don't just fill seats. We find the <span className="text-[#6B5E5E] font-medium">builders</span>—the ones who want to shape the future of affiliate marketing with AI.
+                We don&apos;t just fill seats. We find the <span className="text-[#6B5E5E] font-medium">builders</span>—the ones who want to shape the future of affiliate marketing with AI.
               </p>
               <motion.div 
                 whileHover={{ scale: 1.05 }}
@@ -85,7 +85,7 @@ export default function UltimateCareers() {
                     <img key={i} src={`https://i.pravatar.cc/100?img=${i+10}`} className="w-12 h-12 rounded-full border-2 border-white" alt="member" />
                   ))}
                 </div>
-                <p className="text-lg font-medium text-[#6B5E5E]/80 italic">"The most talented room I've ever been in."</p>
+                <p className="text-lg font-medium text-[#6B5E5E]/80 italic">&quot;The most talented room I&apos;ve ever been in.&quot;</p>
               </div>
             </div>
           </div>
@@ -130,9 +130,9 @@ export default function UltimateCareers() {
             <div className="absolute top-0 right-0 opacity-10">
                <Globe2 size={400} />
             </div>
-            <h2 className="text-4xl md:text-6xl font-black mb-6 relative z-10 text-white">Don't see your role?</h2>
+            <h2 className="text-4xl md:text-6xl font-black mb-6 relative z-10 text-white">Don&apos;t see your role?</h2>
             <p className="text-white/70 mb-10 max-w-xl mx-auto text-lg relative z-10">
-              We're always looking for geniuses, rebels, and creators. Send us your portfolio and we'll talk.
+              We&apos;re always looking for geniuses, rebels, and creators. Send us your portfolio and we&apos;ll talk.
             </p>
             <Link
               href="mailto:careers@amsuite.com"

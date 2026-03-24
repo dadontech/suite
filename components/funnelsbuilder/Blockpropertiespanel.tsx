@@ -169,7 +169,7 @@ function ColorInput({ value, onChange, label }: {
         placeholder="#000000"
         style={{
           flex: 1, background: T.surface2, border: `1px solid ${T.border}`, borderRadius: 6,
-          padding: '7px 10px', fontFamily: FONTS.ui, fontSize: 12, color: T.text, outline: 'none',
+          padding: '7px 10px', fontSize: 12, color: T.text, outline: 'none',
           fontFamily: 'monospace',
         }}
       />
@@ -1556,7 +1556,7 @@ export function BlockPropertiesPanel({ block, onUpdate }: PanelProps) {
           <p style={{ fontFamily: FONTS.ui, fontSize: 12, fontWeight: 700, color: T.text, margin: 0 }}>
             {BLOCK_LABELS[type] || type}
           </p>
-          <p style={{ fontFamily: FONTS.ui, fontSize: 10, color: T.text3, margin: '1px 0 0', fontFamily: 'monospace' }}>
+          <p style={{fontSize: 10, color: T.text3, margin: '1px 0 0', fontFamily: 'monospace' }}>
             {block.id}
           </p>
         </div>

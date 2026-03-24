@@ -204,7 +204,7 @@ export default function GDPRPage() {
           <section id="complaint">
             <h2 className="text-2xl font-bold text-[#F35D2C] mb-4">7. Right to Lodge a Complaint</h2>
             <p className="leading-relaxed text-[#6B5E5E]/80 mb-4">
-              If you believe that our processing of your personal data infringes the GDPR, you have the right to lodge a complaint with your local supervisory authority. In the UK, this is the Information Commissioner's Office (ICO); in Ireland, the Data Protection Commission (DPC). We encourage you to contact us first so we can attempt to resolve any concerns.
+              If you believe that our processing of your personal data infringes the GDPR, you have the right to lodge a complaint with your local supervisory authority. In the UK, this is the Information Commissioner&apos;s Office (ICO); in Ireland, the Data Protection Commission (DPC). We encourage you to contact us first so we can attempt to resolve any concerns.
             </p>
             <p className="leading-relaxed text-[#6B5E5E]/80">
               You may also seek a judicial remedy if you consider that your rights have been violated.

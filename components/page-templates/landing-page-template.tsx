@@ -14,8 +14,20 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-// 1. NINE LANDING PAGE TEMPLATES WITH OUR COLOR PALETTE
-const landingTemplates = [
+// ─── Types ────────────────────────────────────────────────────────────────
+interface LandingTemplate {
+  id: number;
+  name: string;
+  description: string;
+  category: string;
+  conversionRate: number;
+  usedBy: string;
+  premium: boolean;
+  image: string;
+}
+
+// ─── Templates ────────────────────────────────────────────────────────────
+const landingTemplates: LandingTemplate[] = [
   {
     id: 1,
     name: "CYBER SAAS",
@@ -136,7 +148,7 @@ export default function LandingPagesPage() {
 
   const totalItems = landingTemplates.length;
   // Duplicate array for infinite loop effect
-  const extendedTemplates = [...landingTemplates, ...landingTemplates, ...landingTemplates];
+  const extendedTemplates: LandingTemplate[] = [...landingTemplates, ...landingTemplates, ...landingTemplates];
   const slideWidth = 380 + 32; // card width + gap (2rem = 32px)
   // Center the carousel so that we always have items on both sides
   const baseOffset = -totalItems * slideWidth; // start at first copy
@@ -321,8 +333,8 @@ export default function LandingPagesPage() {
   );
 }
 
-// Card component with our colors and fallback
-function CarouselCard({ template }: { template: any }) {
+// Card component with proper typing
+function CarouselCard({ template }: { template: LandingTemplate }) {
   const [imgError, setImgError] = useState(false);
 
   return (

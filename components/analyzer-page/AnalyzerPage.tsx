@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   Link2,
   Zap,
@@ -163,22 +163,22 @@ export default function LinkAnalyzerPage() {
     return () => clearInterval(timer);
   }, [nextSlide]);
 
-  const variants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 300 : -300,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      transition: { duration: 0.5, ease: "easeInOut" },
-    },
-    exit: (direction: number) => ({
-      x: direction < 0 ? 300 : -300,
-      opacity: 0,
-      transition: { duration: 0.5, ease: "easeInOut" },
-    }),
-  };
+const variants: Variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 300 : -300,
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: { duration: 0.5, ease: "easeInOut" as const },
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? 300 : -300,
+    opacity: 0,
+    transition: { duration: 0.5, ease: "easeInOut" as const },
+  }),
+};
 
   const product = sampleProducts[currentIndex];
 

@@ -3,6 +3,30 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+// ========== TYPES ==========
+interface GeneratedContent {
+  article: string;
+  titles: string[];
+  metaDescription: string;
+}
+
+interface ProductInfo {
+  // Define actual fields if known, otherwise keep as record
+  [key: string]: unknown;
+}
+
+interface FunnelStep {
+  [key: string]: unknown;
+}
+
+interface FunnelEmail {
+  [key: string]: unknown;
+}
+
+interface FunnelVideo {
+  [key: string]: unknown;
+}
+
 interface Campaign {
   id: string;
   link: string;
@@ -11,22 +35,33 @@ interface Campaign {
   wordCount: string;
   contentType: string;
   funnelType: string;
-  productInfo?: any;
-  generatedContent?: any;
-  funnelSteps?: any[];
-  funnelEmails?: any[];
-  funnelVideo?: any;
+  productInfo?: ProductInfo;
+  generatedContent?: GeneratedContent;
+  funnelSteps?: FunnelStep[];
+  funnelEmails?: FunnelEmail[];
+  funnelVideo?: FunnelVideo;
   createdAt: string;
 }
 
+interface FormData {
+  keyword: string;
+  contentType: string;
+  funnelType: string;
+  tone: string;
+  wordCount: string;
+  generatedContent: GeneratedContent;
+}
+
+// ========== COMPONENT ==========
 export default function EditCampaignPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
+
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     keyword: "",
     contentType: "",
     funnelType: "",
@@ -39,7 +74,7 @@ export default function EditCampaignPage() {
     if (!id) return;
     fetch(`/api/campaigns/${id}`)
       .then(res => res.json())
-      .then(data => {
+      .then((data: Campaign) => {
         setCampaign(data);
         setFormData({
           keyword: data.keyword,
@@ -61,10 +96,12 @@ export default function EditCampaignPage() {
       });
   }, [id]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     if (name.startsWith("generatedContent.")) {
-      const field = name.split(".")[1];
+      const field = name.split(".")[1] as keyof GeneratedContent;
       setFormData(prev => ({
         ...prev,
         generatedContent: {
@@ -82,7 +119,7 @@ export default function EditCampaignPage() {
     setSaving(true);
     try {
       const res = await fetch(`/api/campaigns/${id}`, {
-        method: 'PATCH', // matches our API method
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });

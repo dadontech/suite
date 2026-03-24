@@ -178,7 +178,7 @@ export default function CookiePolicyPage() {
               Most web browsers allow you to control cookies through their settings. You can block or delete cookies, but please note that some features of our site may not function properly without them.
             </p>
             <p className="leading-relaxed text-[#6B5E5E]/80">
-              To learn more about how to manage cookies, visit <span className="text-[#F35D2C]">aboutcookies.org</span> or your browser's help pages.
+              To learn more about how to manage cookies, visit <span className="text-[#F35D2C]">aboutcookies.org</span> or your browser&apos;s help pages.
             </p>
           </section>
 
@@ -188,7 +188,7 @@ export default function CookiePolicyPage() {
               We use services provided by third parties that may set their own cookies on your device. These include:
             </p>
             <ul className="list-disc pl-6 space-y-2 leading-relaxed marker:text-[#F35D2C] text-[#6B5E5E]/80">
-              <li><strong className="text-[#6B5E5E] font-semibold">Google Analytics:</strong> Helps us analyze site traffic and usage patterns. Google's privacy policy applies.</li>
+              <li><strong className="text-[#6B5E5E] font-semibold">Google Analytics:</strong> Helps us analyze site traffic and usage patterns. Google&apos;s privacy policy applies.</li>
               <li><strong className="text-[#6B5E5E] font-semibold">Stripe:</strong> Used for payment processing. Stripe sets cookies to prevent fraud and remember your payment details if you choose.</li>
               <li><strong className="text-[#6B5E5E] font-semibold">Intercom:</strong> Provides customer support chat. They may set cookies to remember your conversations.</li>
             </ul>

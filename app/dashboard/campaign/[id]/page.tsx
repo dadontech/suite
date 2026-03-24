@@ -475,7 +475,7 @@ export default function CampaignDetail() {
 
                     const lines = text.split(/\n/);
                     let html = "";
-                    let inSpeech = false;
+                    
 
                     for (const raw of lines) {
                       const line = raw.trim();

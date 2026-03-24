@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { T, ICONS } from "./constants";
 import { Ic } from "./icons";
-import { BlockWrapper, PaletteProvider, type Palette } from "./BlockWrapper";
+import { BlockWrapper, PaletteProvider, type Palette, type Block } from "./BlockWrapper";
 
 interface Page {
   id: string;
   label: string;
   icon: string;
   bg: string;
-  blocks: any[];
+  blocks: Block[];                  
 }
 
 interface VideoSuggestionData {
@@ -136,7 +136,7 @@ export function PreviewModal({ pages, startPage, video, palette, onClose }: Prev
                   rel="noopener noreferrer"
                   className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 transition-colors no-underline shadow-md"
                 >
-                  <Ic d={ICONS.youtube} s={12} c="white" />
+                  <Ic d={ICONS.play} s={12} c="white" />  {/* ✅ replaced ICONS.youtube with ICONS.play */}
                   Search YouTube
                 </a>
               </>
@@ -176,7 +176,7 @@ export function PreviewModal({ pages, startPage, video, palette, onClose }: Prev
                     index={idx}
                     total={page.blocks.length}
                     selected={false}
-                    preview={true}                       // ← disable editing in preview
+                    preview={true}
                     onSelect={noop}
                     onUpdate={noopUpdate}
                     onMove={noopMove}

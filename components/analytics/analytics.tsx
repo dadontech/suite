@@ -8,17 +8,26 @@ import {
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis,
   CartesianGrid, Tooltip, ResponsiveContainer,
-  TooltipContentProps, // ✅ import the correct type
 } from 'recharts';
 
-const areaData = [
+// Data types
+interface AreaData {
+  name: string;
+  revenue: number;
+}
+const areaData: AreaData[] = [
   { name: 'Jan', revenue: 1200 }, { name: 'Feb', revenue: 1800 },
   { name: 'Mar', revenue: 2400 }, { name: 'Apr', revenue: 2100 },
   { name: 'May', revenue: 3200 }, { name: 'Jun', revenue: 4100 },
   { name: 'Jul', revenue: 4800 },
 ];
 
-const barData = [
+interface BarData {
+  name: string;
+  clicks: number;
+  conv: number;
+}
+const barData: BarData[] = [
   { name: 'Jan', clicks: 4000, conv: 100 }, { name: 'Feb', clicks: 5200, conv: 120 },
   { name: 'Mar', clicks: 6800, conv: 150 }, { name: 'Apr', clicks: 6100, conv: 110 },
   { name: 'May', clicks: 8400, conv: 180 }, { name: 'Jun', clicks: 9800, conv: 200 },
@@ -35,29 +44,44 @@ const campaigns = [
   { rank: 5, name: 'Software Tools Bundle',      revenue: '$445.75',   trend: '2.2%'  },
 ];
 
-/* ── Tooltips ── */
-// ✅ Use TooltipContentProps<number, string> to match Recharts' tooltip payload
-const RevenueTooltip = ({ active, payload, label }: TooltipContentProps<number, string>) => {
+/* ── Tooltips (no `any`, fully typed) ── */
+
+// Shape of the payload items we care about
+interface TooltipPayloadItem {
+  value: number;
+  dataKey: string;
+  color: string;
+  [key: string]: unknown; // allow other fields that Recharts might add
+}
+
+// Shape of the props passed to our tooltip functions
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayloadItem[];
+  label?: string;
+}
+
+const RevenueTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
-  // payload[0].value is the revenue value
+  const { value } = payload[0];
   return (
     <div className="bg-white border border-[#006E74]/20 rounded-xl px-3 py-2 shadow-lg text-xs">
       <p className="font-bold text-[#6B5E5E] mb-0.5">{label}</p>
       <p className="text-[#F35D2C] font-semibold">
-        Revenue: ${payload[0].value?.toLocaleString()}
+        Revenue: ${value.toLocaleString()}
       </p>
     </div>
   );
 };
 
-const BarTooltip = ({ active, payload, label }: TooltipContentProps<number, string>) => {
+const BarTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-white border border-[#006E74]/20 rounded-xl px-3 py-2 shadow-lg text-xs">
       <p className="font-bold text-[#6B5E5E] mb-1">{label}</p>
       {payload.map(p => (
         <p key={p.dataKey} className="font-semibold" style={{ color: p.color }}>
-          {p.dataKey === 'clicks' ? 'Clicks' : 'Conversions'}: {p.value?.toLocaleString()}
+          {p.dataKey === 'clicks' ? 'Clicks' : 'Conversions'}: {p.value.toLocaleString()}
         </p>
       ))}
     </div>
@@ -174,7 +198,6 @@ const AnalyticsDashboard = () => {
                     axisLine={false} tickLine={false} width={30}
                     tick={{ fill: '#6B5E5E', fontSize: 9 }}
                   />
-                  {/* Use the tooltip component directly, no cast needed */}
                   <Tooltip content={RevenueTooltip} />
                   <Area
                     type="monotone" dataKey="revenue"
@@ -215,7 +238,6 @@ const AnalyticsDashboard = () => {
                     axisLine={false} tickLine={false} width={30}
                     tick={{ fill: '#6B5E5E', fontSize: 9 }}
                   />
-                  {/* ✅ Use the tooltip component directly */}
                   <Tooltip content={BarTooltip} />
                   <Bar dataKey="clicks" fill="#F35D2C" radius={[4,4,0,0]} maxBarSize={18} />
                   <Bar dataKey="conv"   fill="#006E74" radius={[4,4,0,0]} maxBarSize={18} />
@@ -243,15 +265,12 @@ const AnalyticsDashboard = () => {
                 key={c.rank}
                 className="flex flex-col xs:flex-row xs:items-center justify-between px-3 xs:px-4 sm:px-5 py-3 hover:bg-[#006E74]/5 transition-colors cursor-pointer gap-2"
               >
-                {/* Left */}
                 <div className="flex items-center gap-3 min-w-0">
                   <span className="w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 flex-shrink-0 flex items-center justify-center bg-[#F35D2C]/10 text-[#F35D2C] rounded-xl font-bold text-xs xs:text-sm">
                     {c.rank}
                   </span>
                   <span className="font-bold text-[#6B5E5E] text-xs xs:text-sm sm:text-base truncate">{c.name}</span>
                 </div>
-
-                {/* Right */}
                 <div className="flex items-center justify-between xs:justify-end gap-2 xs:gap-4 sm:gap-5 ml-10 sm:ml-13.5">
                   <p className="font-bold text-[#6B5E5E] text-xs xs:text-sm sm:text-base">{c.revenue}</p>
                   <span className="text-[#006E74] font-bold text-[9px] xs:text-[10px] sm:text-sm bg-[#006E74]/10 px-2 py-1 rounded-full flex items-center gap-1 whitespace-nowrap">

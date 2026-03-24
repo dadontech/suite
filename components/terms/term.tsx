@@ -137,7 +137,7 @@ export default function TermsPage() {
           <section id="acceptance-of-terms">
             <h2 className="text-2xl font-bold text-[#F35D2C] mb-4">1. Acceptance of Terms</h2>
             <p className="leading-relaxed text-[#6B5E5E]/80">
-              By accessing or using the Amsuite website, platform, or any related services (collectively, the "Service"), you agree to be bound by these Terms of Service ("Terms") and our Privacy Policy. If you do not agree to these Terms, you may not use the Service. Your continued use of the Service constitutes your acceptance of any future updates to these Terms.
+              By accessing or using the Amsuite website, platform, or any related services (collectively, the &quot;Service&quot;), you agree to be bound by these Terms of Service (&quot;Terms&quot;) and our Privacy Policy. If you do not agree to these Terms, you may not use the Service. Your continued use of the Service constitutes your acceptance of any future updates to these Terms.
             </p>
           </section>
 
@@ -164,7 +164,7 @@ export default function TermsPage() {
           <section id="payment-and-billing">
             <h2 className="text-2xl font-bold text-[#F35D2C] mb-4">4. Payment and Billing</h2>
             <p className="leading-relaxed text-[#6B5E5E]/80 mb-4">
-              Subscription fees are billed in advance on a monthly or yearly basis, depending on your chosen plan. All fees are non‑refundable except as required by applicable law. We may change our prices with 30 days' notice; if you do not agree to the new prices, you may cancel before they take effect.
+              Subscription fees are billed in advance on a monthly or yearly basis, depending on your chosen plan. All fees are non‑refundable except as required by applicable law. We may change our prices with 30 days&apos; notice; if you do not agree to the new prices, you may cancel before they take effect.
             </p>
             <p className="leading-relaxed text-[#6B5E5E]/80">
               You are responsible for all taxes associated with your subscription. If your payment method fails, we may suspend your account until payment is successfully processed.

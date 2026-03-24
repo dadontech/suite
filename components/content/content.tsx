@@ -133,10 +133,14 @@ function LivePreviewModal({ item, onClose }: { item: Campaign; onClose: () => vo
   const fm = FM[funnelKey] || FM.bridge;
   const accent = fm.accent;
 
-  // Extract domain from affiliate link for realistic preview
+  // ✅ FIX: handle undefined link with fallback
   const domain = (() => {
-    try { return new URL(item.link).hostname.replace("www.", ""); }
-    catch { return "yourdomain.com"; }
+    if (!item.link) return "affiliatelink.com";
+    try {
+      return new URL(item.link).hostname.replace("www.", "");
+    } catch {
+      return "affiliatelink.com";
+    }
   })();
 
   // Build breadcrumb path: domain / keyword-slug
@@ -155,7 +159,22 @@ function LivePreviewModal({ item, onClose }: { item: Campaign; onClose: () => vo
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const steps = [
+  // ✅ Define StepItem type
+  interface StepItem {
+    num: string;
+    label: string;
+    sub: string;
+    bg: string;
+    border: string;
+    textColor: string;
+    subColor: string;
+    isKey?: boolean;
+    isCurrent?: boolean;
+    isDestination?: boolean;
+    icon?: React.ElementType;
+  }
+
+  const steps: StepItem[] = [
     {
       num: "01", label: "SEO Article",
       sub: "Ranks on Google · reader clicks CTA",
@@ -163,7 +182,7 @@ function LivePreviewModal({ item, onClose }: { item: Campaign; onClose: () => vo
       textColor: "#0f0d0a", subColor: "#9B8E8E",
       isCurrent: true,
     },
-    ...fm.pages.map((p, i): any => ({
+    ...fm.pages.map((p, i): StepItem => ({
       num: String(i + 2).padStart(2, "0"),
       label: p.label,
       sub: p.key ? "Key conversion page" : `Funnel step ${i + 1}`,

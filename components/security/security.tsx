@@ -132,7 +132,7 @@ export default function SecurityPage() {
             <div className="order-1 md:order-2 bg-[#FAFAFA] border border-[#006E74]/10 rounded-2xl p-10 md:p-12">
               <h2 className="text-3xl font-medium text-[#6B5E5E] mb-4">Access Monitoring</h2>
               <p className="text-[#6B5E5E]/70 leading-relaxed text-lg font-light mb-4">
-                We maintain detailed audit logs of who accesses what and when. Suspicious activity triggers alerts to our security team. You can also view your account's access history in real time through the dashboard.
+                We maintain detailed audit logs of who accesses what and when. Suspicious activity triggers alerts to our security team. You can also view your account&apos;s access history in real time through the dashboard.
               </p>
               <ul className="space-y-2">
                 <li className="flex items-start gap-2">
@@ -151,7 +151,7 @@ export default function SecurityPage() {
             <div className="bg-[#FAFAFA] border border-[#006E74]/10 rounded-2xl p-10 md:p-12">
               <h2 className="text-3xl font-medium text-[#6B5E5E] mb-4">Vulnerability Management</h2>
               <p className="text-[#6B5E5E]/70 leading-relaxed text-lg font-light mb-4">
-                We conduct regular penetration tests and code reviews. We also run a bug bounty program – if you find a vulnerability, we'll reward you. Our security team follows a strict disclosure policy.
+                We conduct regular penetration tests and code reviews. We also run a bug bounty program – if you find a vulnerability, we&apos;ll reward you. Our security team follows a strict disclosure policy.
               </p>
               <ul className="space-y-2">
                 <li className="flex items-start gap-2">
@@ -171,7 +171,7 @@ export default function SecurityPage() {
             <div className="bg-[#FAFAFA] border border-[#006E74]/10 rounded-2xl p-10 md:p-12 flex flex-col justify-center h-full">
               <div className="flex items-center gap-2 text-sm uppercase tracking-wider text-[#006E74] mb-4">Responsible Disclosure</div>
               <p className="text-3xl font-medium text-[#6B5E5E] mb-2">security@amsuite.com</p>
-              <p className="text-base text-[#6B5E5E]/60 font-light">Report issues to our team – we'll respond within 24 hours and coordinate disclosure.</p>
+              <p className="text-base text-[#6B5E5E]/60 font-light">Report issues to our team – we&apos;ll respond within 24 hours and coordinate disclosure.</p>
             </div>
           </div>
         </section>

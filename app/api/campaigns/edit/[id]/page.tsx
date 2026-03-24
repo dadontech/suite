@@ -3,14 +3,37 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+// Define types for the data shape
+interface GeneratedContent {
+  article: string;
+  titles: string[];
+  metaDescription: string;
+}
+
+interface Campaign {
+  id: string;
+  keyword: string;
+  contentType: string;
+  funnelType: string;
+  generatedContent: GeneratedContent;
+}
+
+interface FormData {
+  keyword: string;
+  contentType: string;
+  funnelType: string;
+  generatedContent: GeneratedContent;
+}
+
 export default function EditCampaignPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-  const [campaign, setCampaign] = useState<any>(null);
+
+  const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     keyword: "",
     contentType: "",
     funnelType: "",
@@ -21,7 +44,7 @@ export default function EditCampaignPage() {
     if (!id) return;
     fetch(`/api/campaigns/${id}`)
       .then(res => res.json())
-      .then(data => {
+      .then((data: Campaign) => {  // Explicitly type the fetched data
         setCampaign(data);
         setFormData({
           keyword: data.keyword,
@@ -44,7 +67,7 @@ export default function EditCampaignPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (name.startsWith("generatedContent.")) {
-      const field = name.split(".")[1];
+      const field = name.split(".")[1] as keyof GeneratedContent;
       setFormData(prev => ({
         ...prev,
         generatedContent: {

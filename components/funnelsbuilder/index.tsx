@@ -38,6 +38,7 @@ interface Block {
   imageUrl?: string;
   aspectRatio?: string;
   alt?: string;
+  url?: string;                 // for video blocks
   columns?: Array<{ icon?: string; title: string; body: string }>;
   testimonials?: Array<{ quote: string; author: string; title?: string; stars?: number }>;
   stats?: Array<{ value: string; label: string }>;
@@ -62,9 +63,9 @@ interface FunnelBlockData {
   body?: string;
   cta?: string;
   ctaLink?: string;
-  items?: string[];
-  proItems?: string[];
-  conItems?: string[];
+  items?: unknown[];
+  proItems?: unknown[];
+  conItems?: unknown[];
   leftTitle?: string;
   rightTitle?: string;
   rating?: number;
@@ -76,6 +77,7 @@ interface FunnelBlockData {
   imageUrl?: string;
   aspectRatio?: string;
   alt?: string;
+  url?: string;
   columns?: Array<{ icon?: string; title: string; body: string }>;
   testimonials?: Array<{ quote: string; author: string; title?: string; stars?: number }>;
   stats?: Array<{ value: string; label: string }>;
@@ -142,6 +144,27 @@ const DEFAULT_PALETTE: Palette = {
   border: 'rgba(0,0,0,0.09)',
 };
 
+// ─── Helper: convert unknown array to string array ────────────────────────────
+function toStrArray(arr: unknown[] | undefined): string[] | undefined {
+  if (!arr) return undefined;
+  return arr.map(v => String(v ?? ''));
+}
+
+// ─── Helper: sanitize block patch (ensure arrays are string[]) ───────────────
+function sanitizeBlockPatch(patch: Partial<Block>): Partial<Block> {
+  const result = { ...patch };
+  if (Array.isArray(patch.items)) {
+    result.items = patch.items.map(item => String(item ?? ''));
+  }
+  if (Array.isArray(patch.proItems)) {
+    result.proItems = patch.proItems.map(item => String(item ?? ''));
+  }
+  if (Array.isArray(patch.conItems)) {
+    result.conItems = patch.conItems.map(item => String(item ?? ''));
+  }
+  return result;
+}
+
 // ─── Icon key map ─────────────────────────────────────────────────────────────
 
 const PAGE_ICON_MAP: Record<string, string> = {
@@ -177,7 +200,15 @@ function buildPagesFromData(data: FunnelData, paletteBg?: string): Page[] {
       label: p.label || `Page ${i + 1}`,
       icon: resolveIcon(p.icon || 'fileText'),
       bg: p.bg || bg,
-      blocks: (p.blocks || []).map(b => ({ ...b, id: uid(), type: b.type || 'paragraph' })) as Block[],
+      blocks: (p.blocks || []).map(b => ({
+        ...b,
+        id: uid(),
+        type: b.type || 'paragraph',
+        items: toStrArray(b.items),
+        proItems: toStrArray(b.proItems),
+        conItems: toStrArray(b.conItems),
+        url: b.url,
+      })) as Block[],
     }));
   }
   if (data.steps && data.steps.length > 0) {
@@ -187,7 +218,15 @@ function buildPagesFromData(data: FunnelData, paletteBg?: string): Page[] {
       if (!pageMap.has(pageLabel)) {
         pageMap.set(pageLabel, { icon: 'fileText', bg, blocks: [] });
       }
-      pageMap.get(pageLabel)!.blocks.push({ ...step, id: uid(), type: step.type || 'paragraph' } as Block);
+      pageMap.get(pageLabel)!.blocks.push({
+        ...step,
+        id: uid(),
+        type: step.type || 'paragraph',
+        items: toStrArray(step.items),
+        proItems: toStrArray(step.proItems),
+        conItems: toStrArray(step.conItems),
+        url: step.url,
+      } as Block);
     });
     if (pageMap.size > 0) {
       return Array.from(pageMap.entries()).map(([label, val], i) => ({
@@ -203,7 +242,15 @@ function buildPagesFromData(data: FunnelData, paletteBg?: string): Page[] {
       label: 'Custom Funnel',
       icon: 'rocket',
       bg,
-      blocks: data.steps.map(s => ({ ...s, id: uid(), type: s.type || 'paragraph' } as Block)),
+      blocks: data.steps.map(s => ({
+        ...s,
+        id: uid(),
+        type: s.type || 'paragraph',
+        items: toStrArray(s.items),
+        proItems: toStrArray(s.proItems),
+        conItems: toStrArray(s.conItems),
+        url: s.url,
+      } as Block)),
     }];
   }
   return [{ id: 'blog', label: 'Blog Post', icon: 'fileText', bg, blocks: [] }];
@@ -299,11 +346,12 @@ export default function FunnelBuilderPro({
 
   // ── Block operations ──────────────────────────────────────────────────────
   const updateBlock = useCallback((id: string, patch: Partial<Block>) => {
+    const sanitized = sanitizeBlockPatch(patch);
     updatePages(prev =>
       prev.map(p =>
         p.id !== activePageId
           ? p
-          : { ...p, blocks: p.blocks.map(b => b.id === id ? { ...b, ...patch } : b) }
+          : { ...p, blocks: p.blocks.map(b => b.id === id ? { ...b, ...sanitized } : b) }
       )
     );
   }, [activePageId]);
@@ -313,7 +361,9 @@ export default function FunnelBuilderPro({
   };
 
   const addBlock = (type: string) => {
-    const nb: Block = { ...(BD[type as keyof typeof BD] ?? { type }), id: uid() };
+    const base = (BD[type as keyof typeof BD] ?? {}) as Partial<Block>;
+    const sanitizedBase = sanitizeBlockPatch(base);
+    const nb: Block = { ...sanitizedBase, id: uid(), type: sanitizedBase.type ?? type };
     updatePages(prev =>
       prev.map(p => p.id !== activePageId ? p : { ...p, blocks: [...p.blocks, nb] })
     );
@@ -381,8 +431,10 @@ export default function FunnelBuilderPro({
     try {
       const result = JSON.parse(saved) as FunnelData;
       const newPalette = result.palette ?? DEFAULT_PALETTE;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPalette(newPalette);
       const builtPages = buildPagesFromData(result, newPalette.bg);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPages(builtPages);
       if (builtPages.length > 0) setActivePageId(builtPages[0].id);
       if (result.emails?.length) setFunnelEmails(result.emails);
@@ -392,48 +444,47 @@ export default function FunnelBuilderPro({
     } catch (e) {
       console.error('Failed to parse funnelBuilderData', e);
     }
-  }, []);
+  }, []); // run only once on mount – safe
 
-  // ── Auto‑embed suggested video into video block (NEW) ───────────────────────
-useEffect(() => {
-  // Only run for webinar/vsl funnels with a video suggestion that has a usable URL
-  if (!funnelVideo?.videoUrl && !funnelVideo?.embedUrl) return;
-  if (funnelType !== 'webinar' && funnelType !== 'vsl') return;
+  // ── Auto‑embed suggested video into video block ────────────────────────────
+  useEffect(() => {
+    if (!funnelVideo?.videoUrl && !funnelVideo?.embedUrl) return;
+    if (funnelType !== 'webinar' && funnelType !== 'vsl') return;
 
-  // Extract a watch URL (https://youtu.be/... or https://www.youtube.com/watch?v=...)
-  let watchUrl = funnelVideo.videoUrl;
-  if (!watchUrl && funnelVideo.embedUrl) {
-    const match = funnelVideo.embedUrl.match(/embed\/([\w-]{11})/);
-    if (match) watchUrl = `https://www.youtube.com/watch?v=${match[1]}`;
-  }
-  if (!watchUrl) return;
-
-  // Check if any video block already has a URL – don't override user changes
-  let hasExistingUrl = false;
-  for (const page of pages) {
-    if (page.blocks.some(b => b.type === 'video' && b.url)) {
-      hasExistingUrl = true;
-      break;
+    let watchUrl = funnelVideo.videoUrl;
+    if (!watchUrl && funnelVideo.embedUrl) {
+      const match = funnelVideo.embedUrl.match(/embed\/([\w-]{11})/);
+      if (match) watchUrl = `https://www.youtube.com/watch?v=${match[1]}`;
     }
-  }
-  if (hasExistingUrl) return;
+    if (!watchUrl) return;
 
-  // Find the first video block and set its url
-  let updated = false;
-  const newPages = pages.map(page => {
-    const blocks = page.blocks.map(block => {
-      if (block.type === 'video' && !block.url) {
-        updated = true;
-        return { ...block, url: watchUrl };
+    let hasExistingUrl = false;
+    for (const page of pages) {
+      if (page.blocks.some(b => b.type === 'video' && b.url)) {
+        hasExistingUrl = true;
+        break;
       }
-      return block;
-    });
-    if (updated) return { ...page, blocks };
-    return page;
-  });
+    }
+    if (hasExistingUrl) return;
 
-  if (updated) setPages(newPages);
-}, [funnelVideo, funnelType, pages]);
+    let updated = false;
+    const newPages = pages.map(page => {
+      const blocks = page.blocks.map(block => {
+        if (block.type === 'video' && !block.url) {
+          updated = true;
+          return { ...block, url: watchUrl };
+        }
+        return block;
+      });
+      if (updated) return { ...page, blocks };
+      return page;
+    });
+
+    if (updated) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setPages(newPages);
+    }
+  }, [funnelVideo, funnelType, pages]);
 
   // ── Publish ───────────────────────────────────────────────────────────────
   const handlePublish = () => {

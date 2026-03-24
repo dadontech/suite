@@ -3,6 +3,14 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+// ========== TYPES ==========
+interface SocialSnippet {
+  platform?: string;
+  content?: string;
+  // Add other known fields as needed
+  [key: string]: unknown;
+}
+
 interface Campaign {
   id: string;
   keyword: string;
@@ -11,7 +19,7 @@ interface Campaign {
     titles: string[];
     metaDescription: string;
     article: string;
-    socialSnippets: any[];
+    socialSnippets: SocialSnippet[];  // Now properly typed
   };
   productInfo?: {
     title?: string;
@@ -26,6 +34,7 @@ interface Campaign {
   createdAt: string;
 }
 
+// ========== COMPONENT ==========
 export default function PreviewPage() {
   const params = useParams();
   const id = params.id as string;
@@ -39,7 +48,7 @@ export default function PreviewPage() {
         if (!res.ok) throw new Error('Campaign not found');
         return res.json();
       })
-      .then(data => {
+      .then((data: Campaign) => {  // Explicitly type the response
         setCampaign(data);
         setLoading(false);
       })

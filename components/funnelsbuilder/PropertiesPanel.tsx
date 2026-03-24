@@ -98,16 +98,52 @@ const typeLabels: Record<string, string> = {
 };
 
 export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
-  const [aiState, setAiState] = useState<AiState>({ loading: false, videoLoading: false });
+  const [aiState, setAiState] = useState<AiState>({
+    loading: false,
+    videoLoading: false,
+  });
 
   if (!block) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", padding: 24, textAlign: "center", opacity: 0.3 }}>
-        <div style={{ width: 52, height: 52, border: "2px dashed rgba(0,0,0,0.15)", borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+          padding: 24,
+          textAlign: "center",
+          opacity: 0.3,
+        }}
+      >
+        <div
+          style={{
+            width: 52,
+            height: 52,
+            border: "2px dashed rgba(0,0,0,0.15)",
+            borderRadius: 14,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: 16,
+          }}
+        >
           <Ic d={ICONS.settings} s={22} c={T.text2} />
         </div>
-        <p style={{ color: T.text2, fontSize: 12, fontWeight: 600, margin: "0 0 6px" }}>No block selected</p>
-        <p style={{ color: T.text3, fontSize: 11, lineHeight: 1.5 }}>Click any block on the canvas to edit its properties here</p>
+        <p
+          style={{
+            color: T.text2,
+            fontSize: 12,
+            fontWeight: 600,
+            margin: "0 0 6px",
+          }}
+        >
+          No block selected
+        </p>
+        <p style={{ color: T.text3, fontSize: 11, lineHeight: 1.5 }}>
+          Click any block on the canvas to edit its properties here
+        </p>
       </div>
     );
   }
@@ -125,7 +161,11 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type: "image-prompt",
-          context: block.description || block.alt || block.title || "product lifestyle photo",
+          context:
+            block.description ||
+            block.alt ||
+            block.title ||
+            "product lifestyle photo",
         }),
       });
       if (!res.ok) throw new Error("Failed to generate prompt");
@@ -163,7 +203,11 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
         return (
           <>
             <Section title="Background">
-              <ColorRow label="Page BG" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Page BG"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
             </Section>
             <Section title="Colors">
               <ColorRow
@@ -178,8 +222,16 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               />
             </Section>
             <Section title="CTA Button">
-              <ColorRow label="BG Color" value={block.ctaBg} onChange={(v: string) => onChange({ ctaBg: v })} />
-              <ColorRow label="Text" value={block.ctaColor} onChange={(v: string) => onChange({ ctaColor: v })} />
+              <ColorRow
+                label="BG Color"
+                value={block.ctaBg}
+                onChange={(v: string) => onChange({ ctaBg: v })}
+              />
+              <ColorRow
+                label="Text"
+                value={block.ctaColor}
+                onChange={(v: string) => onChange({ ctaColor: v })}
+              />
             </Section>
           </>
         );
@@ -190,7 +242,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
             <Section title="Typography">
               <Slider
                 label="Size"
-                value={block.size}
+                value={block.size ?? 32}
                 min={16}
                 max={72}
                 step={2}
@@ -205,7 +257,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
                     [800, "Bold"],
                     [900, "Black"],
                   ]}
-                  value={block.weight}
+                  value={block.weight ?? 800}
                   onChange={(v: number) => onChange({ weight: v })}
                 />
               </Row>
@@ -216,13 +268,13 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
                     ["center", "↔"],
                     ["right", "→"],
                   ]}
-                  value={block.align}
+                  value={block.align ?? "left"}
                   onChange={(v: string) => onChange({ align: v })}
                 />
               </Row>
               <Slider
                 label="Line H"
-                value={block.lineHeight}
+                value={block.lineHeight ?? 1.2}
                 min={1}
                 max={2.5}
                 step={0.05}
@@ -230,7 +282,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               />
               <Slider
                 label="Spacing"
-                value={block.letterSpacing}
+                value={block.letterSpacing ?? 0}
                 min={-2}
                 max={8}
                 step={0.5}
@@ -239,8 +291,16 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               />
             </Section>
             <Section title="Colors">
-              <ColorRow label="Text" value={block.color} onChange={(v: string) => onChange({ color: v })} />
-              <ColorRow label="Background" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Text"
+                value={block.color}
+                onChange={(v: string) => onChange({ color: v })}
+              />
+              <ColorRow
+                label="Background"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
             </Section>
           </>
         );
@@ -251,7 +311,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
             <Section title="Typography">
               <Slider
                 label="Size"
-                value={block.size}
+                value={block.size ?? 18}
                 min={12}
                 max={40}
                 step={1}
@@ -265,13 +325,13 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
                     ["center", "↔"],
                     ["right", "→"],
                   ]}
-                  value={block.align}
+                  value={block.align ?? "left"}
                   onChange={(v: string) => onChange({ align: v })}
                 />
               </Row>
               <Slider
                 label="Line H"
-                value={block.lineHeight}
+                value={block.lineHeight ?? 1.6}
                 min={1}
                 max={2.5}
                 step={0.05}
@@ -279,8 +339,16 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               />
             </Section>
             <Section title="Colors">
-              <ColorRow label="Text" value={block.color} onChange={(v: string) => onChange({ color: v })} />
-              <ColorRow label="Background" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Text"
+                value={block.color}
+                onChange={(v: string) => onChange({ color: v })}
+              />
+              <ColorRow
+                label="Background"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
             </Section>
           </>
         );
@@ -291,7 +359,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
             <Section title="Typography">
               <Slider
                 label="Size"
-                value={block.size}
+                value={block.size ?? 15}
                 min={11}
                 max={28}
                 step={1}
@@ -306,13 +374,13 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
                     ["right", "→"],
                     ["justify", "≡"],
                   ]}
-                  value={block.align}
+                  value={block.align ?? "left"}
                   onChange={(v: string) => onChange({ align: v })}
                 />
               </Row>
               <Slider
                 label="Line H"
-                value={block.lineHeight}
+                value={block.lineHeight ?? 1.7}
                 min={1}
                 max={2.5}
                 step={0.05}
@@ -320,8 +388,16 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               />
             </Section>
             <Section title="Colors">
-              <ColorRow label="Text" value={block.color} onChange={(v: string) => onChange({ color: v })} />
-              <ColorRow label="Background" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Text"
+                value={block.color}
+                onChange={(v: string) => onChange({ color: v })}
+              />
+              <ColorRow
+                label="Background"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
             </Section>
           </>
         );
@@ -330,13 +406,21 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
         return (
           <>
             <Section title="Colors">
-              <ColorRow label="BG Color" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
-              <ColorRow label="Text Color" value={block.color} onChange={(v: string) => onChange({ color: v })} />
+              <ColorRow
+                label="BG Color"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
+              <ColorRow
+                label="Text Color"
+                value={block.color}
+                onChange={(v: string) => onChange({ color: v })}
+              />
             </Section>
             <Section title="Typography">
               <Slider
                 label="Font Size"
-                value={block.fontSize}
+                value={block.fontSize ?? 16}
                 min={12}
                 max={28}
                 step={1}
@@ -347,7 +431,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
             <Section title="Size & Shape">
               <Slider
                 label="Padding X"
-                value={block.paddingX}
+                value={block.paddingX ?? 32}
                 min={8}
                 max={80}
                 step={2}
@@ -356,7 +440,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               />
               <Slider
                 label="Padding Y"
-                value={block.paddingY}
+                value={block.paddingY ?? 14}
                 min={6}
                 max={40}
                 step={1}
@@ -365,7 +449,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               />
               <Slider
                 label="Radius"
-                value={block.borderRadius}
+                value={block.borderRadius ?? 12}
                 min={0}
                 max={50}
                 step={1}
@@ -381,7 +465,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
                     ["center", "↔"],
                     ["right", "→"],
                   ]}
-                  value={block.align}
+                  value={block.align ?? "center"}
                   onChange={(v: string) => onChange({ align: v })}
                 />
               </Row>
@@ -391,7 +475,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
                     [false, "Auto"],
                     [true, "Full"],
                   ]}
-                  value={block.fullWidth}
+                  value={block.fullWidth ?? false}
                   onChange={(v: boolean) => onChange({ fullWidth: v })}
                 />
               </Row>
@@ -405,7 +489,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
             <Section title="Typography">
               <Slider
                 label="Font Size"
-                value={block.size}
+                value={block.size ?? 15}
                 min={12}
                 max={24}
                 step={1}
@@ -414,7 +498,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               />
               <Slider
                 label="Line H"
-                value={block.lineHeight}
+                value={block.lineHeight ?? 1.6}
                 min={1}
                 max={2.5}
                 step={0.05}
@@ -422,8 +506,16 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               />
             </Section>
             <Section title="Colors">
-              <ColorRow label="Text" value={block.color} onChange={(v: string) => onChange({ color: v })} />
-              <ColorRow label="Background" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Text"
+                value={block.color}
+                onChange={(v: string) => onChange({ color: v })}
+              />
+              <ColorRow
+                label="Background"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
             </Section>
           </>
         );
@@ -439,25 +531,34 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
                     min={1}
                     max={5}
                     step={0.1}
-                    value={block.rating || 5}
-                    onChange={(e) => onChange({ rating: parseFloat(e.target.value) })}
+                    value={block.rating ?? 5}
+                    onChange={(e) =>
+                      onChange({ rating: parseFloat(e.target.value) })
+                    }
                     style={{ width: "100%", accentColor: T.accent }}
                   />
-                  <p style={{ fontSize: 11, color: T.text3, textAlign: "right", marginTop: 2 }}>
-                    {Number(block.rating || 5).toFixed(1)} / 5.0
+                  <p
+                    style={{
+                      fontSize: 11,
+                      color: T.text3,
+                      textAlign: "right",
+                      marginTop: 2,
+                    }}
+                  >
+                    {Number(block.rating ?? 5).toFixed(1)} / 5.0
                   </p>
                 </div>
               </Row>
               <Row label="Count">
                 <PropInput
-                  value={block.count}
+                  value={block.count ?? ""}
                   onChange={(v: string) => onChange({ count: v })}
                   placeholder="2,847"
                 />
               </Row>
               <Row label="Label">
                 <PropInput
-                  value={block.text}
+                  value={block.text ?? ""}
                   onChange={(v: string) => onChange({ text: v })}
                   placeholder="verified reviews"
                 />
@@ -469,7 +570,11 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
                 value={block.starColor}
                 onChange={(v: string) => onChange({ starColor: v })}
               />
-              <ColorRow label="Background" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Background"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
             </Section>
           </>
         );
@@ -480,21 +585,25 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
             <Section title="Icon & Label">
               <Row label="Icon">
                 <PropInput
-                  value={block.icon}
+                  value={block.icon ?? ""}
                   onChange={(v: string) => onChange({ icon: v })}
                   placeholder="💡"
                 />
               </Row>
               <Row label="Label">
                 <PropInput
-                  value={block.title}
+                  value={block.title ?? ""}
                   onChange={(v: string) => onChange({ title: v })}
                   placeholder="Pro Tip"
                 />
               </Row>
             </Section>
             <Section title="Colors">
-              <ColorRow label="Background" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Background"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
               <ColorRow
                 label="Left Border"
                 value={block.borderColor}
@@ -518,7 +627,11 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
         return (
           <>
             <Section title="Colors">
-              <ColorRow label="Background" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Background"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
               <ColorRow
                 label="Border"
                 value={block.borderColor}
@@ -542,7 +655,11 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
         return (
           <>
             <Section title="Colors">
-              <ColorRow label="Card BG" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Card BG"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
               <ColorRow
                 label="Quote"
                 value={block.quoteColor}
@@ -580,25 +697,35 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
             <Section title="Timer">
               <Row label="Hours">
                 <PropInput
-                  value={String(block.hours || 0)}
-                  onChange={(v: string) => onChange({ hours: parseInt(v) || 0 })}
+                  value={String(block.hours ?? 0)}
+                  onChange={(v: string) =>
+                    onChange({ hours: parseInt(v) || 0 })
+                  }
                 />
               </Row>
               <Row label="Minutes">
                 <PropInput
-                  value={String(block.minutes || 0)}
-                  onChange={(v: string) => onChange({ minutes: parseInt(v) || 0 })}
+                  value={String(block.minutes ?? 0)}
+                  onChange={(v: string) =>
+                    onChange({ minutes: parseInt(v) || 0 })
+                  }
                 />
               </Row>
               <Row label="Seconds">
                 <PropInput
-                  value={String(block.seconds || 0)}
-                  onChange={(v: string) => onChange({ seconds: parseInt(v) || 0 })}
+                  value={String(block.seconds ?? 0)}
+                  onChange={(v: string) =>
+                    onChange({ seconds: parseInt(v) || 0 })
+                  }
                 />
               </Row>
             </Section>
             <Section title="Colors">
-              <ColorRow label="Background" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Background"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
               <ColorRow
                 label="Digit BG"
                 value={block.digitBg}
@@ -622,7 +749,11 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
         return (
           <>
             <Section title="Colors">
-              <ColorRow label="Background" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Background"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
               <ColorRow
                 label="Question"
                 value={block.questionColor}
@@ -652,14 +783,18 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
                     ["line", "Line"],
                     ["space", "Space"],
                   ]}
-                  value={block.style}
+                  value={block.style ?? "line"}
                   onChange={(v: string) => onChange({ style: v })}
                 />
               </Row>
-              <ColorRow label="Color" value={block.color} onChange={(v: string) => onChange({ color: v })} />
+              <ColorRow
+                label="Color"
+                value={block.color}
+                onChange={(v: string) => onChange({ color: v })}
+              />
               <Slider
                 label="Thickness"
-                value={block.thickness}
+                value={block.thickness ?? 1}
                 min={1}
                 max={8}
                 step={1}
@@ -668,7 +803,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               />
               <Row label="Label">
                 <PropInput
-                  value={block.label}
+                  value={block.label ?? ""}
                   onChange={(v: string) => onChange({ label: v })}
                   placeholder="Optional label…"
                 />
@@ -683,14 +818,14 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
             <Section title="Image Settings">
               <Row label="Alt Text">
                 <PropInput
-                  value={block.alt}
+                  value={block.alt ?? ""}
                   onChange={(v: string) => onChange({ alt: v })}
                   placeholder="Describe the image…"
                 />
               </Row>
               <Row label="Caption">
                 <PropInput
-                  value={block.description}
+                  value={block.description ?? ""}
                   onChange={(v: string) => onChange({ description: v })}
                   placeholder="Optional caption…"
                 />
@@ -702,7 +837,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
                     ["contain", "Contain"],
                     ["fill", "Fill"],
                   ]}
-                  value={block.objectFit}
+                  value={block.objectFit ?? "cover"}
                   onChange={(v: string) => onChange({ objectFit: v })}
                 />
               </Row>
@@ -710,23 +845,25 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
             <Section title="Size & Shape">
               <Row label="Width">
                 <PropInput
-                  value={block.width}
+                  value={block.width ?? ""}
                   onChange={(v: string) => onChange({ width: v })}
                   placeholder="100% or 400px…"
                 />
               </Row>
               <Row label="Height">
                 <PropInput
-                  value={String(block.height || "auto")}
+                  value={String(block.height ?? "auto")}
                   onChange={(v: string) =>
-                    onChange({ height: v === "auto" ? "auto" : parseInt(v) || "auto" })
+                    onChange({
+                      height: v === "auto" ? "auto" : parseInt(v) || "auto",
+                    })
                   }
                   placeholder="auto or 300…"
                 />
               </Row>
               <Slider
                 label="Radius"
-                value={block.rounded}
+                value={block.rounded ?? 12}
                 min={0}
                 max={48}
                 step={2}
@@ -739,10 +876,14 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               <textarea
                 className="prop-input"
                 rows={3}
-                value={block.aiPrompt || ""}
+                value={block.aiPrompt ?? ""}
                 onChange={(e) => onChange({ aiPrompt: e.target.value })}
                 placeholder="Describe the image you want to generate…"
-                style={{ resize: "vertical", marginBottom: 8, fontFamily: "inherit" }}
+                style={{
+                  resize: "vertical",
+                  marginBottom: 8,
+                  fontFamily: "inherit",
+                }}
               />
               <button
                 onClick={generateAIImagePrompt}
@@ -752,7 +893,8 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               >
                 {aiState.loading ? (
                   <>
-                    <Ic d={ICONS.loading} s={12} c={T.teal} /> Generating prompt…
+                    <Ic d={ICONS.loading} s={12} c={T.teal} /> Generating
+                    prompt…
                   </>
                 ) : (
                   <>
@@ -762,21 +904,32 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               </button>
               <button
                 onClick={async () => {
-                  const prompt = block.aiPrompt || block.alt || "professional product lifestyle photo";
+                  const prompt =
+                    block.aiPrompt ||
+                    block.alt ||
+                    "professional product lifestyle photo";
                   const src = `https://image.pollinations.ai/prompt/${encodeURIComponent(
-                    prompt + ", professional, high quality"
+                    prompt + ", professional, high quality",
                   )}?width=800&height=500&nologo=true&seed=${Date.now()}`;
                   onChange({ src });
                 }}
                 disabled={!block.aiPrompt}
                 className="ai-btn"
-                style={{ background: "rgba(243,93,44,0.1)", borderColor: "rgba(243,93,44,0.3)", color: T.accent }}
+                style={{
+                  background: "rgba(243,93,44,0.1)",
+                  borderColor: "rgba(243,93,44,0.3)",
+                  color: T.accent,
+                }}
               >
                 <Ic d={ICONS.sparkle} s={12} c={T.accent} /> Generate AI Image ✦
               </button>
             </Section>
             <Section title="Background">
-              <ColorRow label="Block BG" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Block BG"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
             </Section>
           </>
         );
@@ -788,7 +941,7 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               <Label>YouTube or Vimeo URL</Label>
               <Row label="">
                 <PropInput
-                  value={block.url}
+                  value={block.url ?? ""}
                   onChange={(v: string) => onChange({ url: v })}
                   placeholder="https://youtube.com/watch?v=…"
                   mono
@@ -796,14 +949,14 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               </Row>
               <Row label="Title">
                 <PropInput
-                  value={block.title}
+                  value={block.title ?? ""}
                   onChange={(v: string) => onChange({ title: v })}
                   placeholder="Optional video title…"
                 />
               </Row>
               <Slider
                 label="Radius"
-                value={block.rounded}
+                value={block.rounded ?? 12}
                 min={0}
                 max={24}
                 step={2}
@@ -812,28 +965,61 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
               />
             </Section>
             <Section title="AI Suggest Video">
-              <button onClick={findRelatedVideo} disabled={aiState.videoLoading} className="ai-btn">
+              <button
+                onClick={findRelatedVideo}
+                disabled={aiState.videoLoading}
+                className="ai-btn"
+              >
                 {aiState.videoLoading ? (
                   <>
                     <Ic d={ICONS.loading} s={12} c={T.teal} /> Searching…
                   </>
                 ) : (
                   <>
-                    <Ic d={ICONS.sparkle} s={12} c={T.teal} /> Find Related YouTube Videos
+                    <Ic d={ICONS.sparkle} s={12} c={T.teal} /> Find Related
+                    YouTube Videos
                   </>
                 )}
               </button>
               {block.videoSuggestions && (
-                <div style={{ marginTop: 10, background: T.bg3, borderRadius: 8, padding: 10 }}>
-                  <p style={{ fontSize: 10, color: T.text3, marginBottom: 6, fontWeight: 700 }}>SEARCH THESE ON YOUTUBE:</p>
-                  <pre style={{ fontSize: 11, color: T.text2, whiteSpace: "pre-wrap", lineHeight: 1.6, fontFamily: "inherit" }}>
+                <div
+                  style={{
+                    marginTop: 10,
+                    background: T.bg3,
+                    borderRadius: 8,
+                    padding: 10,
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: 10,
+                      color: T.text3,
+                      marginBottom: 6,
+                      fontWeight: 700,
+                    }}
+                  >
+                    SEARCH THESE ON YOUTUBE:
+                  </p>
+                  <pre
+                    style={{
+                      fontSize: 11,
+                      color: T.text2,
+                      whiteSpace: "pre-wrap",
+                      lineHeight: 1.6,
+                      fontFamily: "inherit",
+                    }}
+                  >
                     {block.videoSuggestions}
                   </pre>
                 </div>
               )}
             </Section>
             <Section title="Colors">
-              <ColorRow label="Background" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Background"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
             </Section>
           </>
         );
@@ -844,21 +1030,32 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
             <Section title="Spacer">
               <Slider
                 label="Height"
-                value={block.height}
+                value={Number(block.height) || 48}
                 min={8}
                 max={300}
                 step={8}
                 unit="px"
                 onChange={(v: number) => onChange({ height: v })}
               />
-              <ColorRow label="Background" value={block.bg} onChange={(v: string) => onChange({ bg: v })} />
+              <ColorRow
+                label="Background"
+                value={block.bg}
+                onChange={(v: string) => onChange({ bg: v })}
+              />
             </Section>
           </>
         );
 
       default:
         return (
-          <p style={{ fontSize: 11, color: T.text3, fontStyle: "italic", padding: "8px 0" }}>
+          <p
+            style={{
+              fontSize: 11,
+              color: T.text3,
+              fontStyle: "italic",
+              padding: "8px 0",
+            }}
+          >
             No additional properties.
           </p>
         );
@@ -866,13 +1063,54 @@ export function PropertiesPanel({ block, onChange }: PropertiesPanelProps) {
   };
 
   return (
-    <div style={{ padding: "12px 16px", overflowY: "auto", height: "100%", color: T.text1 }} className="panel-slide">
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, paddingBottom: 12, borderBottom: `1px solid ${T.border}` }}>
-        <div style={{ width: 8, height: 8, borderRadius: "50%", background: T.accent, boxShadow: "0 0 8px rgba(243,93,44,0.6)" }} />
-        <span style={{ fontSize: 11, fontWeight: 800, color: T.text2, letterSpacing: 0.5 }}>{typeLabel}</span>
+    <div
+      style={{
+        padding: "12px 16px",
+        overflowY: "auto",
+        height: "100%",
+        color: T.text1,
+      }}
+      className="panel-slide"
+    >
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          marginBottom: 14,
+          paddingBottom: 12,
+          borderBottom: `1px solid ${T.border}`,
+        }}
+      >
+        <div
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            background: T.accent,
+            boxShadow: "0 0 8px rgba(243,93,44,0.6)",
+          }}
+        />
+        <span
+          style={{
+            fontSize: 11,
+            fontWeight: 800,
+            color: T.text2,
+            letterSpacing: 0.5,
+          }}
+        >
+          {typeLabel}
+        </span>
       </div>
       {renderProps()}
-      <p style={{ fontSize: 10, color: T.text4, textAlign: "center", marginTop: 8 }}>
+      <p
+        style={{
+          fontSize: 10,
+          color: T.text4,
+          textAlign: "center",
+          marginTop: 8,
+        }}
+      >
         Click text directly on canvas to edit content
       </p>
     </div>

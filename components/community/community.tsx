@@ -98,7 +98,7 @@ export default function CommunityPage() {
                 </div>
                 <div className="grid grid-rows-2 gap-4">
                   <div className="bg-[#F35D2C] rounded-[32px] p-8 text-white flex flex-col justify-between group cursor-pointer hover:bg-opacity-90 transition-colors">
-                    <h3 className="text-xl font-bold italic leading-snug">"The power of niche selection – my journey from zero to six figures"</h3>
+                    <h3 className="text-xl font-bold italic leading-snug">&quot;The power of niche selection – my journey from zero to six figures&quot;</h3>
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-white/20" />
                       <span className="text-sm font-medium">By Sarah Chen</span>
@@ -177,7 +177,7 @@ export default function CommunityPage() {
               <div className="relative z-10">
                 <h3 className="text-2xl font-black leading-none mb-4">MEMBER <br /> OF THE WEEK</h3>
                 <p className="text-white/80 text-sm mb-6 leading-relaxed">
-                  "This community helped me find my first profitable niche. Now I'm earning $3k/month."
+                  &quot;This community helped me find my first profitable niche. Now I&apos;m earning $3k/month.&quot;
                 </p>
                 <button className="bg-white text-[#F35D2C] text-xs font-black px-6 py-3 rounded-full uppercase tracking-widest hover:scale-105 transition-transform">
                   Read Case Study

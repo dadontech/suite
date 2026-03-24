@@ -72,10 +72,37 @@ const PLANS = [
   },
 ];
 
+// ─── Types for forms ──────────────────────────────────────────
+type ProfileForm = {
+  name: string;
+  email: string;
+  company: string;
+  website: string;
+};
+
+type NotifPrefs = {
+  email: boolean;
+  conversions: boolean;
+  weekly: boolean;
+  marketing: boolean;
+};
+
 // ─── Profile Tab ─────────────────────────────────────────────
 function ProfileTab() {
-  const [form, setForm] = useState({ name: "John Doe", email: "john@example.com", company: "", website: "" });
+  const [form, setForm] = useState<ProfileForm>({
+    name: "John Doe",
+    email: "john@example.com",
+    company: "",
+    website: "",
+  });
   const [saved, setSaved] = useState(false);
+
+  const fields: { label: string; key: keyof ProfileForm; type: string; placeholder: string }[] = [
+    { label: "Full Name",  key: "name",    type: "text",  placeholder: "John Doe" },
+    { label: "Email",      key: "email",   type: "email", placeholder: "john@example.com" },
+    { label: "Company",    key: "company", type: "text",  placeholder: "Your company name" },
+    { label: "Website",    key: "website", type: "url",   placeholder: "https://yoursite.com" },
+  ];
 
   const handleSave = () => {
     setSaved(true);
@@ -86,12 +113,7 @@ function ProfileTab() {
     <div className="border border-[#006E74]/10 rounded-2xl p-4 sm:p-7 w-full max-w-3xl">
       <p className="text-sm sm:text-[15px] font-bold text-[#6B5E5E] mb-5">Profile Information</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 mb-5">
-        {[
-          { label: "Full Name",  key: "name",    type: "text",  placeholder: "John Doe" },
-          { label: "Email",      key: "email",   type: "email", placeholder: "john@example.com" },
-          { label: "Company",    key: "company", type: "text",  placeholder: "Your company name" },
-          { label: "Website",    key: "website", type: "url",   placeholder: "https://yoursite.com" },
-        ].map(({ label, key, type, placeholder }) => (
+        {fields.map(({ label, key, type, placeholder }) => (
           <div key={key}>
             <label className="block text-[11px] sm:text-[12.5px] font-bold text-[#6B5E5E]/80 mb-1.5">{label}</label>
             <input
@@ -120,14 +142,14 @@ function ProfileTab() {
 
 // ─── Notifications Tab ────────────────────────────────────────
 function NotificationsTab() {
-  const [prefs, setPrefs] = useState({
+  const [prefs, setPrefs] = useState<NotifPrefs>({
     email: true,
     conversions: true,
     weekly: false,
     marketing: false,
   });
 
-  const rows = [
+  const rows: { key: keyof NotifPrefs; label: string; desc: string }[] = [
     { key: "email",       label: "Email Notifications",  desc: "Receive email updates about your campaigns" },
     { key: "conversions", label: "Conversion Alerts",     desc: "Get notified when you make a sale" },
     { key: "weekly",      label: "Weekly Reports",        desc: "Receive weekly performance summaries" },
@@ -235,7 +257,7 @@ function ApiKeysTab() {
   const publicKey  = "pk_live_xxxxxxxxxxxxxxxxxxxx";
   const secretKey  = "sk_live_xxxxxxxxxxxxxxxxxxxx";
 
-  const copy = (val, setCopied) => {
+  const copy = (val: string, setCopied: React.Dispatch<React.SetStateAction<boolean>>) => {
     navigator.clipboard.writeText(val).catch(() => {});
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

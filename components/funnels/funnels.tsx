@@ -7,14 +7,39 @@ import {
   Video, Users, HelpCircle, Zap, ArrowRight, AlertCircle
 } from "lucide-react";
 
+// ─── Types ─────────────────────────────────────────────────────
+interface Funnel {
+  id: number;
+  name: string;
+  type: string;
+  status: string;
+  views: string;
+  updated: string;
+}
+
+interface FlowStep {
+  label: string;
+  icon: React.ElementType;
+}
+
+interface Template {
+  id: string;
+  name: string;
+  badge?: string;
+  desc: string;
+  flow: FlowStep[];
+  pages: number;
+  emails: number;
+}
+
 // ─── Data ─────────────────────────────────────────────────────
-const FUNNELS = [
+const FUNNELS: Funnel[] = [
   { id: 1, name: "Headphones Review Funnel",  type: "Review Funnel",     status: "active", views: "4,523 views", updated: "2 hours ago" },
   { id: 2, name: "Fitness Comparison Funnel", type: "Comparison Funnel", status: "active", views: "2,341 views", updated: "1 day ago" },
   { id: 3, name: "Course Discount Funnel",    type: "Discount Funnel",   status: "draft",  views: "0 views",     updated: "3 days ago" },
 ];
 
-const TEMPLATES = [
+const TEMPLATES: Template[] = [
   {
     id: "review",
     name: "Review Funnel",
@@ -130,7 +155,7 @@ const TEMPLATES = [
 ];
 
 // ─── Funnel Row ───────────────────────────────────────────────
-function FunnelRow({ funnel }) {
+function FunnelRow({ funnel }: { funnel: Funnel }) {
   return (
     <div className="group flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-4 sm:py-[18px] border-b last:border-b-0 border-[#006E74]/10 hover:bg-[#006E74]/5 transition-colors cursor-pointer gap-3">
       <div className="flex items-center gap-4">
@@ -175,7 +200,13 @@ function FunnelRow({ funnel }) {
 }
 
 // ─── Template Card ────────────────────────────────────────────
-function TemplateCard({ tpl, selected, onSelect }) {
+interface TemplateCardProps {
+  tpl: Template;
+  selected: boolean;
+  onSelect: () => void;
+}
+
+function TemplateCard({ tpl, selected, onSelect }: TemplateCardProps) {
   return (
     <div
       onClick={onSelect}
@@ -198,7 +229,7 @@ function TemplateCard({ tpl, selected, onSelect }) {
       <p className="text-xs md:text-[12.5px] text-[#6B5E5E]/50 mb-4 md:mb-5 leading-relaxed">{tpl.desc}</p>
 
       <div className="flex items-start gap-2 flex-wrap mb-4 md:mb-5">
-        {tpl.flow.map((step, i) => {
+        {tpl.flow.map((step, i: number) => {
           const Icon = step.icon;
           return (
             <div key={i} className="flex items-center gap-2">

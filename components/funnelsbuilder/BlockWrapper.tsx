@@ -37,36 +37,37 @@ export interface Palette {
   border: string;
 }
 
-interface Block {
+export interface Block {
   id: string;
   type: string;
+  label?: string;
+  sublabel?: string;
+  content?: string;
   headline?: string;
   subheadline?: string;
   eyebrow?: string;
   body?: string;
   cta?: string;
   ctaLink?: string;
-  items?: unknown[];
-  proItems?: unknown[];
-  conItems?: unknown[];
+  items?: string[];           
+  proItems?: string[];       
+  conItems?: string[];        
   leftTitle?: string;
   rightTitle?: string;
-  rating?: unknown;
+  rating?: number;
   ratingCount?: string;
   author?: string;
   authorTitle?: string;
   badge?: string;
-  minutes?: unknown;
+  minutes?: number;
   imageUrl?: string;
   aspectRatio?: string;
   alt?: string;
-  label?: string;
-  sublabel?: string;
-  content?: string;
+  url?: string;               
   columns?: Array<{ icon?: string; title: string; body: string }>;
-  testimonials?: Array<{ quote: string; author: string; title?: string; stars?: unknown }>;
+  testimonials?: Array<{ quote: string; author: string; title?: string; stars?: number }>;
   stats?: Array<{ value: string; label: string }>;
-  [key: string]: unknown;
+  [key: string]: unknown;    
 }
 
 // ─── Safe coercions ───────────────────────────────────────────────────────────
@@ -304,7 +305,455 @@ const ICONS: Record<string, React.ReactNode> = {
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
-//  PREMIUM BLOCK RENDERERS
+//  EXTRACTED INNER COMPONENTS (to avoid "create during render")
+// ══════════════════════════════════════════════════════════════════════════════
+
+// ── Hero CTA button (shared across HeroBlock variants)
+const HeroCtaButton = ({ cta, ctaLink, badge, dark, accent, secondary }: {
+  cta?: string;
+  ctaLink?: string;
+  badge?: string;
+  dark?: boolean;
+  accent: string;
+  secondary: string;
+}) => {
+  if (!cta) return null;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+      <a
+        href={ctaLink || '#'}
+        onClick={e => e.preventDefault()}
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 12,
+          background: `linear-gradient(180deg, ${accent} 0%, ${secondary || accent} 100%)`,
+          color: '#fff',
+          fontFamily: DISPLAY,
+          fontWeight: 700,
+          fontSize: 22,
+          padding: '18px 48px',
+          borderRadius: 6,
+          textDecoration: 'none',
+          textTransform: 'uppercase',
+          letterSpacing: '0.04em',
+          boxShadow: `0 6px 0 rgba(0,0,0,0.3), 0 10px 30px ${accent}55`,
+          border: `2px solid rgba(255,255,255,0.25)`,
+        }}
+      >
+        <span style={{ color: '#fff' }}>{cta}</span>
+        <span style={{ fontSize: 20 }}>→</span>
+      </a>
+      {badge && (
+        <p
+          style={{
+            fontFamily: SANS,
+            fontSize: 12,
+            color: dark ? 'rgba(255,255,255,0.5)' : '#777777',
+            margin: 0,
+          }}
+        >
+          {badge}
+        </p>
+      )}
+    </div>
+  );
+};
+
+// ── ArticleBlock inner components
+const AuthorRow = ({ author, authorTitle, initials, onUpdate, dark = false }: {
+  author?: string;
+  authorTitle?: string;
+  initials: string;
+  onUpdate: (p: Partial<Block>) => void;
+  dark?: boolean;
+}) => {
+  const pal = usePalette();
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: '50%',
+          flexShrink: 0,
+          background: `linear-gradient(135deg,${pal.accent},${pal.secondary})`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontFamily: SANS,
+          fontSize: 13,
+          fontWeight: 800,
+          color: '#fff',
+          boxShadow: `0 4px 14px ${pal.accent}44`,
+        }}
+      >
+        {initials}
+      </div>
+      <div>
+        <E
+          v={author}
+          p="Author Name"
+          onChange={v => onUpdate({ author: v })}
+          style={{
+            fontFamily: SANS,
+            fontSize: 14,
+            fontWeight: 700,
+            color: dark ? 'rgba(255,255,255,0.88)' : '#0a0a0a',
+          }}
+        />
+        <E
+          v={authorTitle}
+          p="Date · Read time"
+          onChange={v => onUpdate({ authorTitle: v })}
+          style={{
+            fontFamily: SANS,
+            fontSize: 12,
+            color: dark ? 'rgba(255,255,255,0.45)' : pal.textMuted,
+            display: 'block',
+            marginTop: 2,
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+const ReadTime = ({ authorTitle, onUpdate }: { authorTitle?: string; onUpdate: (p: Partial<Block>) => void }) => {
+  const pal = usePalette();
+  const t = (authorTitle || '8 min read');
+  const m = t.match(/(\d+)\s*min/);
+  const mins = m ? m[1] : '8';
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+        <div style={{ width: 6, height: 6, borderRadius: '50%', background: pal.accent }} />
+        <span style={{ fontFamily: SANS, fontSize: 11, color: pal.textMuted, fontWeight: 600 }}>
+          {mins} MIN READ
+        </span>
+      </div>
+      <E
+        v={authorTitle}
+        p="March 2026 · 9 min read"
+        onChange={v => onUpdate({ authorTitle: v })}
+        style={{ fontFamily: SANS, fontSize: 11, color: pal.textMuted, fontWeight: 600 }}
+      />
+    </div>
+  );
+};
+
+// ── CountdownBlock inner components
+const Digit = ({ val, label, urgent, accent }: { val: string; label: string; urgent: boolean; accent: string }) => {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+      <div
+        style={{
+          background: urgent ? '#dc2626' : '#1a1a2e',
+          color: '#FFF',
+          fontFamily: 'monospace',
+          fontSize: 'clamp(36px,6vw,64px)',
+          fontWeight: 900,
+          width: 'clamp(72px,10vw,96px)',
+          height: 'clamp(72px,10vw,96px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 8,
+          boxShadow: urgent ? '0 6px 0 #991b1b' : '0 6px 0 #0a0a14',
+          border: '2px solid rgba(255,255,255,0.1)',
+          transition: 'background 0.5s',
+        }}
+      >
+        {val}
+      </div>
+      <span
+        style={{
+          fontFamily: SANS,
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+          color: 'rgba(255,255,255,0.45)',
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+};
+
+const Sep = () => {
+  return (
+    <div
+      style={{
+        color: '#FFF',
+        fontFamily: 'monospace',
+        fontSize: 'clamp(28px,4vw,48px)',
+        fontWeight: 900,
+        marginBottom: 24,
+        opacity: 0.6,
+      }}
+    >
+      :
+    </div>
+  );
+};
+
+// ── OptinFormBlock inner components
+const SuccessCard = ({ accent, secondary }: { accent: string; secondary: string }) => {
+  const pal = usePalette();
+  return (
+    <div
+      style={{
+        borderRadius: 20,
+        padding: '40px 32px',
+        textAlign: 'center',
+        background: `linear-gradient(135deg,${accent}10,${secondary}08)`,
+        border: `2px solid ${accent}30`,
+      }}
+    >
+      <div
+        style={{
+          width: 64,
+          height: 64,
+          borderRadius: '50%',
+          margin: '0 auto 20px',
+          background: `linear-gradient(135deg,${accent},${secondary})`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: `0 8px 32px ${accent}50`,
+        }}
+      >
+        <Check size={28} color="#fff" strokeWidth={3} />
+      </div>
+      <p style={{ fontFamily: DISPLAY, fontSize: 22, fontWeight: 800, color: '#0a0a0a', marginBottom: 10 }}>
+        You&apos;re in.
+      </p>
+      <p style={{ fontFamily: SANS, fontSize: 14, color: pal.textMuted, lineHeight: 1.7 }}>
+        Check your inbox — your free guide is on its way.
+      </p>
+    </div>
+  );
+};
+
+const FormFields = ({
+  cta,
+  body,
+  onUpdate,
+  email,
+  setEmail,
+  name,
+  setName,
+  handleSubmit,
+  inputStyle,
+  inputFocus,
+  inputBlur,
+  accent,
+  secondary,
+  textMuted,
+  dark,
+}: {
+  cta?: string;
+  body?: string;
+  onUpdate: (p: Partial<Block>) => void;
+  email: string;
+  setEmail: (v: string) => void;
+  name: string;
+  setName: (v: string) => void;
+  handleSubmit: (e: React.MouseEvent) => void;
+  inputStyle: React.CSSProperties;
+  inputFocus: (e: React.FocusEvent<HTMLInputElement>) => void;
+  inputBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+  accent: string;
+  secondary: string;
+  textMuted: string;
+  dark?: boolean;
+}) => {
+  return (
+    <div>
+      <div style={{ marginBottom: 14 }}>
+        <label
+          style={{
+            fontFamily: SANS,
+            fontSize: 12,
+            fontWeight: 700,
+            color: dark ? 'rgba(255,255,255,0.7)' : '#0a0a0a',
+            display: 'block',
+            marginBottom: 6,
+          }}
+        >
+          First Name
+        </label>
+        <input
+          type="text"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          onClick={e => e.stopPropagation()}
+          placeholder="Your first name"
+          style={inputStyle}
+          onFocus={inputFocus}
+          onBlur={inputBlur}
+        />
+      </div>
+      <div style={{ marginBottom: 20 }}>
+        <label
+          style={{
+            fontFamily: SANS,
+            fontSize: 12,
+            fontWeight: 700,
+            color: dark ? 'rgba(255,255,255,0.7)' : '#0a0a0a',
+            display: 'block',
+            marginBottom: 6,
+          }}
+        >
+          Email Address
+        </label>
+        <input
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          onClick={e => e.stopPropagation()}
+          placeholder="your@email.com"
+          style={inputStyle}
+          onFocus={inputFocus}
+          onBlur={inputBlur}
+        />
+      </div>
+      <button
+        onClick={handleSubmit}
+        style={{
+          width: '100%',
+          padding: '18px 24px',
+          border: 'none',
+          borderRadius: 12,
+          background: `linear-gradient(135deg,${accent},${secondary})`,
+          color: '#fff',
+          fontFamily: SANS,
+          fontWeight: 900,
+          fontSize: 16,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 10,
+          boxShadow: dark ? `0 4px 0 rgba(0,0,0,0.4),0 12px 40px ${accent}50` : `0 4px 0 #0a0a0a,0 12px 40px ${accent}50`,
+        }}
+      >
+        <E v={cta || 'Send Me the Free Guide'} p="Button text..." onChange={v => onUpdate({ cta: v })} style={{ color: '#fff' }} />
+        <ArrowRight size={18} />
+      </button>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 14 }}>
+        <Lock size={11} color={textMuted} />
+        <span style={{ fontFamily: SANS, fontSize: 11, color: textMuted }}>{body || 'No spam. Unsubscribe anytime. 100% free.'}</span>
+      </div>
+    </div>
+  );
+};
+
+// ── TestimonialGridBlock inner component
+const TestimonialCard = ({
+  t,
+  dark,
+  accent,
+  secondary,
+  border,
+  textMuted,
+}: {
+  t: { quote: string; author: string; title?: string; stars?: number };
+  dark: boolean;
+  accent: string;
+  secondary: string;
+  border: string;
+  textMuted: string;
+}) => {
+  return (
+    <div
+      style={{
+        background: dark ? 'rgba(255,255,255,0.05)' : '#fff',
+        border: dark ? '1px solid rgba(255,255,255,0.1)' : `2px solid ${border}`,
+        borderRadius: 8,
+        padding: '28px 24px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+      }}
+    >
+      <div style={{ display: 'flex', gap: 3 }}>
+        {[1, 2, 3, 4, 5].map(i => (
+          <Star
+            key={i}
+            size={16}
+            fill={i <= (t.stars || 5) ? accent : '#e0e0e0'}
+            color={i <= (t.stars || 5) ? accent : '#e0e0e0'}
+            strokeWidth={0}
+          />
+        ))}
+      </div>
+      <p
+        style={{
+          fontFamily: SANS,
+          fontSize: 15,
+          color: dark ? 'rgba(255,255,255,0.8)' : '#1a1a1a',
+          lineHeight: 1.75,
+          margin: 0,
+          fontStyle: 'italic',
+        }}
+      >
+        &quot;{t.quote}&quot;
+      </p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 'auto' }}>
+        <div
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: '50%',
+            background: `linear-gradient(135deg,${accent},${secondary})`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+            fontFamily: SANS,
+            fontSize: 13,
+            fontWeight: 800,
+            color: '#fff',
+          }}
+        >
+          {t.author.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+        </div>
+        <div>
+          <p
+            style={{
+              fontFamily: SANS,
+              fontSize: 13,
+              fontWeight: 700,
+              color: dark ? '#fff' : '#0a0a0a',
+              margin: 0,
+            }}
+          >
+            {t.author}
+          </p>
+          {t.title && (
+            <p
+              style={{
+                fontFamily: SANS,
+                fontSize: 11,
+                color: dark ? 'rgba(255,255,255,0.4)' : textMuted,
+                margin: 0,
+                marginTop: 2,
+              }}
+            >
+              {t.title}
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  PREMIUM BLOCK RENDERERS (using extracted inner components)
 // ══════════════════════════════════════════════════════════════════════════════
 
 // ── IMAGE ─────────────────────────────────────────────────────────────────────
@@ -349,31 +798,6 @@ function ArticleBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p: P
   const variant = (b.variant as string) || 'classic';
   const initials = (b.author || 'A').split(' ').map((w: string) => w[0]).join('').toUpperCase().slice(0,2);
 
-  const AuthorRow = ({ dark = false }: { dark?: boolean }) => (
-    <div style={{ display:'flex', alignItems:'center', gap:12 }}>
-      <div style={{ width:44, height:44, borderRadius:'50%', flexShrink:0, background:`linear-gradient(135deg,${pal.accent},${pal.secondary})`, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:SANS, fontSize:13, fontWeight:800, color:'#fff', boxShadow:`0 4px 14px ${pal.accent}44` }}>{initials}</div>
-      <div>
-        <E v={b.author} p="Author Name" onChange={v=>u({author:v})} style={{ fontFamily:SANS, fontSize:14, fontWeight:700, color: dark ? 'rgba(255,255,255,0.88)' : '#0a0a0a' }} />
-        <E v={b.authorTitle} p="Date · Read time" onChange={v=>u({authorTitle:v})} style={{ fontFamily:SANS, fontSize:12, color: dark ? 'rgba(255,255,255,0.45)' : pal.textMuted, display:'block', marginTop:2 }} />
-      </div>
-    </div>
-  );
-
-  const ReadTime = () => {
-    const t = (b.authorTitle || '8 min read');
-    const m = t.match(/(\d+)\s*min/);
-    const mins = m ? m[1] : '8';
-    return (
-      <div style={{ display:'flex', alignItems:'center', gap:16, flexWrap:'wrap' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:5 }}>
-          <div style={{ width:6, height:6, borderRadius:'50%', background:pal.accent }} />
-          <span style={{ fontFamily:SANS, fontSize:11, color:pal.textMuted, fontWeight:600 }}>{mins} MIN READ</span>
-        </div>
-        <E v={b.authorTitle} p="March 2026 · 9 min read" onChange={v=>u({authorTitle:v})} style={{ fontFamily:SANS, fontSize:11, color:pal.textMuted, fontWeight:600 }} />
-      </div>
-    );
-  };
-
   // ── Variant: nyt — New York Times editorial ──────────────────────────────
   if (variant === 'nyt') {
     return (
@@ -388,8 +812,8 @@ function ArticleBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p: P
           <E v={b.subheadline} p="Deck..." onChange={v=>u({subheadline:v})} style={{ fontFamily:SANS, fontSize:20, fontWeight:400, lineHeight:1.65, color:'#333', display:'block', marginBottom:28, borderLeft:`3px solid ${pal.accent}`, paddingLeft:16 }} />
         )}
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12, paddingTop:18, borderTop:'1px solid #ccc' }}>
-          <AuthorRow />
-          <ReadTime />
+          <AuthorRow author={b.author} authorTitle={b.authorTitle} initials={initials} onUpdate={u} />
+          <ReadTime authorTitle={b.authorTitle} onUpdate={u} />
         </div>
       </div>
     );
@@ -412,7 +836,9 @@ function ArticleBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p: P
             {b.subheadline && (
               <E v={b.subheadline} p="Deck..." onChange={v=>u({subheadline:v})} style={{ fontFamily:SANS, fontSize:18, fontWeight:400, lineHeight:1.72, color:pal.textMuted, display:'block', marginBottom:28 }} />
             )}
-            <div style={{ paddingTop:20, borderTop:`1px solid ${pal.border}` }}><AuthorRow /></div>
+            <div style={{ paddingTop:20, borderTop:`1px solid ${pal.border}` }}>
+              <AuthorRow author={b.author} authorTitle={b.authorTitle} initials={initials} onUpdate={u} />
+            </div>
           </div>
           <div style={{ paddingTop:8 }}>
             <div style={{ background:pal.surfaceAlt, borderRadius:16, padding:'20px 18px', border:`1px solid ${pal.border}` }}>
@@ -448,10 +874,12 @@ function ArticleBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p: P
           <E v={b.subheadline} p="Deck..." onChange={v=>u({subheadline:v})} style={{ fontFamily:SANS, fontSize:18, fontWeight:400, lineHeight:1.7, color:'rgba(255,255,255,0.5)', display:'block', marginBottom:36, maxWidth:600, position:'relative', zIndex:2 }} />
         )}
         <div style={{ paddingTop:24, borderTop:'1px solid rgba(255,255,255,0.1)', position:'relative', zIndex:2, display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:16 }}>
-          <AuthorRow dark />
+          <AuthorRow author={b.author} authorTitle={b.authorTitle} initials={initials} onUpdate={u} dark />
           <div style={{ display:'flex', alignItems:'center', gap:6 }}>
             <div style={{ width:5, height:5, borderRadius:'50%', background:pal.accent }} />
-            <span style={{ fontFamily:SANS, fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.35)', letterSpacing:'0.08em', textTransform:'uppercase' }}><E v={b.authorTitle} p="March 2026 · 9 min read" onChange={v=>u({authorTitle:v})} style={{ color:'rgba(255,255,255,0.35)' }} /></span>
+            <span style={{ fontFamily:SANS, fontSize:11, fontWeight:700, color:'rgba(255,255,255,0.35)', letterSpacing:'0.08em', textTransform:'uppercase' }}>
+              <E v={b.authorTitle} p="March 2026 · 9 min read" onChange={v=>u({authorTitle:v})} style={{ color:'rgba(255,255,255,0.35)' }} />
+            </span>
           </div>
         </div>
       </div>
@@ -470,7 +898,9 @@ function ArticleBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p: P
           {b.subheadline && (
             <E v={b.subheadline} p="Deck..." onChange={v=>u({subheadline:v})} style={{ fontFamily:SANS, fontSize:17, fontWeight:400, lineHeight:1.7, color:pal.textMuted, flex:1, minWidth:240 }} />
           )}
-          <div style={{ flexShrink:0 }}><AuthorRow /></div>
+          <div style={{ flexShrink:0 }}>
+            <AuthorRow author={b.author} authorTitle={b.authorTitle} initials={initials} onUpdate={u} />
+          </div>
         </div>
       </div>
     );
@@ -491,8 +921,8 @@ function ArticleBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p: P
       )}
       <div style={{ height:1, background:`linear-gradient(90deg,${pal.accent}60,transparent)`, marginBottom:24 }} />
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
-        <AuthorRow />
-        <ReadTime />
+        <AuthorRow author={b.author} authorTitle={b.authorTitle} initials={initials} onUpdate={u} />
+        <ReadTime authorTitle={b.authorTitle} onUpdate={u} />
       </div>
     </div>
   );
@@ -507,7 +937,7 @@ function PullQuoteBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p:
     return (
       <div style={{ borderRadius:20, padding:'44px 52px', margin:'8px 0', background:`linear-gradient(150deg,${pal.dark},${pal.primary})`, position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', top:-30, right:-30, width:200, height:200, borderRadius:'50%', background:`radial-gradient(circle,${pal.accent}20 0%,transparent 70%)`, pointerEvents:'none' }} />
-        <div style={{ fontFamily:DISPLAY, fontSize:80, lineHeight:0.7, color:`${pal.accent}35`, fontWeight:900, marginBottom:20, position:'relative', zIndex:2 }}>"</div>
+        <div style={{ fontFamily:DISPLAY, fontSize:80, lineHeight:0.7, color:`${pal.accent}35`, fontWeight:900, marginBottom:20, position:'relative', zIndex:2 }}>&quot;</div>
         <E v={b.body||b.headline} p="Pull quote text..." onChange={v=>u({body:v})} style={{ fontFamily:DISPLAY, fontSize:'clamp(20px,2.5vw,28px)', fontStyle:'italic', color:'rgba(255,255,255,0.88)', lineHeight:1.55, fontWeight:400, display:'block', marginBottom:24, position:'relative', zIndex:2 }} />
         {b.author && <E v={b.author} p="— Attribution" onChange={v=>u({author:v})} style={{ fontFamily:SANS, fontSize:13, fontWeight:700, color:'rgba(255,255,255,0.45)', letterSpacing:'0.04em', display:'block', position:'relative', zIndex:2 }} />}
       </div>
@@ -526,7 +956,7 @@ function PullQuoteBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p:
   // accent (default)
   return (
     <div style={{ borderRadius:20, padding:'36px 44px', margin:'8px 0', background:`${pal.accent}08`, border:`1.5px solid ${pal.accent}25`, position:'relative', overflow:'hidden', textAlign:'center' }}>
-      <div style={{ fontFamily:DISPLAY, fontSize:72, lineHeight:0.7, color:`${pal.accent}20`, fontWeight:900, marginBottom:16 }}>"</div>
+      <div style={{ fontFamily:DISPLAY, fontSize:72, lineHeight:0.7, color:`${pal.accent}20`, fontWeight:900, marginBottom:16 }}>&quot;</div>
       <E v={b.body||b.headline} p="Pull quote text..." onChange={v=>u({body:v})} style={{ fontFamily:DISPLAY, fontSize:'clamp(22px,2.8vw,30px)', fontStyle:'italic', color:'#0a0a0a', lineHeight:1.5, fontWeight:700, display:'block', marginBottom:b.author?18:0 }} />
       {b.author && (
         <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:10, marginTop:16 }}>
@@ -690,29 +1120,6 @@ function HeroBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p: Part
   const pal = usePalette();
   const variant = (b.variant as string) || 'centered';
 
-  // Shared CTA row
-  const CtaBtn = ({ dark=false }:{dark?:boolean}) => b.cta ? (
-    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:10 }}>
-      <a href={b.ctaLink||'#'} onClick={e=>e.preventDefault()} style={{
-        display:'inline-flex', alignItems:'center', gap:12,
-        background:`linear-gradient(180deg, ${pal.accent} 0%, ${pal.secondary||pal.accent} 100%)`,
-        color:'#fff', fontFamily:DISPLAY, fontWeight:700, fontSize:22,
-        padding:'18px 48px', borderRadius:6, textDecoration:'none',
-        textTransform:'uppercase', letterSpacing:'0.04em',
-        boxShadow:`0 6px 0 rgba(0,0,0,0.3), 0 10px 30px ${pal.accent}55`,
-        border:`2px solid rgba(255,255,255,0.25)`,
-      }}>
-        <E v={b.cta} p="YES — Get Access Now" onChange={v=>u({cta:v})} style={{ color:'#fff' }} />
-        <span style={{ fontSize:20 }}>→</span>
-      </a>
-      {(b as Record<string,unknown>).badge && (
-        <p style={{ fontFamily:SANS, fontSize:12, color: dark ? 'rgba(255,255,255,0.5)' : pal.textMuted, margin:0 }}>
-          {String((b as Record<string,unknown>).badge)}
-        </p>
-      )}
-    </div>
-  ) : null;
-
   // ── centered (default CF style) ─────────────────────────────────────────
   if (variant === 'centered' || variant === 'magazine') {
     return (
@@ -734,7 +1141,16 @@ function HeroBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p: Part
             color:'rgba(255,255,255,0.72)', maxWidth:600, margin:'0 auto 40px', display:'block', position:'relative', zIndex:2,
           }} />
         )}
-        <div style={{ position:'relative', zIndex:2 }}><CtaBtn dark /></div>
+        <div style={{ position:'relative', zIndex:2 }}>
+          <HeroCtaButton
+            cta={b.cta}
+            ctaLink={b.ctaLink}
+            badge={(b as Record<string,unknown>).badge as string}
+            dark
+            accent={pal.accent}
+            secondary={pal.secondary}
+          />
+        </div>
       </div>
     );
   }
@@ -766,7 +1182,14 @@ function HeroBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p: Part
               display:'block', marginBottom:36, maxWidth:540,
             }} />
           )}
-          <CtaBtn dark />
+          <HeroCtaButton
+            cta={b.cta}
+            ctaLink={b.ctaLink}
+            badge={(b as Record<string,unknown>).badge as string}
+            dark
+            accent={pal.accent}
+            secondary={pal.secondary}
+          />
         </div>
       </div>
     );
@@ -787,7 +1210,14 @@ function HeroBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p: Part
           fontFamily:SANS, fontSize:18, lineHeight:1.7, color:pal.textMuted, display:'block', marginBottom:32,
         }} />
       )}
-      <CtaBtn />
+      <HeroCtaButton
+        cta={b.cta}
+        ctaLink={b.ctaLink}
+        badge={(b as Record<string,unknown>).badge as string}
+        dark={false}
+        accent={pal.accent}
+        secondary={pal.secondary}
+      />
     </div>
   );
 }
@@ -1142,37 +1572,22 @@ function TestimonialGridBlock({ block: b, onUpdate: u }: { block: Block; onUpdat
       { quote:'Paid for itself in the first 10 days. I only wish I had found this two years earlier.', author:'Lisa T.', title:'Verified Buyer', stars:5 },
     ];
 
-  const Card = ({ t, dark=false }:{ t:typeof items[0]; dark?:boolean }) => (
-    <div style={{
-      background: dark ? 'rgba(255,255,255,0.05)' : '#fff',
-      border: dark ? '1px solid rgba(255,255,255,0.1)' : `2px solid ${pal.border}`,
-      borderRadius:8, padding:'28px 24px',
-      display:'flex', flexDirection:'column', gap:16,
-    }}>
-      <div style={{ display:'flex', gap:3 }}>
-        {[1,2,3,4,5].map(i => <Star key={i} size={16} fill={i<=(t.stars||5)?pal.accent:'#e0e0e0'} color={i<=(t.stars||5)?pal.accent:'#e0e0e0'} strokeWidth={0} />)}
-      </div>
-      <p style={{ fontFamily:SANS, fontSize:15, color: dark ? 'rgba(255,255,255,0.8)' : '#1a1a1a', lineHeight:1.75, margin:0, fontStyle:'italic' }}>
-        "{t.quote}"
-      </p>
-      <div style={{ display:'flex', alignItems:'center', gap:10, marginTop:'auto' }}>
-        <div style={{ width:38, height:38, borderRadius:'50%', background:`linear-gradient(135deg,${pal.accent},${pal.secondary||pal.accent})`, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, fontFamily:SANS, fontSize:13, fontWeight:800, color:'#fff' }}>
-          {t.author.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
-        </div>
-        <div>
-          <p style={{ fontFamily:SANS, fontSize:13, fontWeight:700, color: dark ? '#fff' : pal.dark, margin:0 }}>{t.author}</p>
-          {t.title && <p style={{ fontFamily:SANS, fontSize:11, color: dark ? 'rgba(255,255,255,0.4)' : pal.textMuted, margin:0, marginTop:2 }}>{t.title}</p>}
-        </div>
-      </div>
-    </div>
-  );
-
   if (variant === 'dark') {
     return (
       <div style={{ background:`linear-gradient(160deg, ${pal.dark}, #0a0a0a)`, borderRadius:10, padding:'48px 36px' }}>
         {b.headline && <E v={b.headline} p="Testimonials headline..." onChange={v=>u({headline:v})} style={{ fontFamily:DISPLAY, fontSize:28, fontWeight:700, textTransform:'uppercase', color:'#fff', display:'block', marginBottom:32, textAlign:'center', letterSpacing:'0.02em' }} />}
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16 }}>
-          {items.slice(0,3).map((t,i) => <Card key={i} t={t} dark />)}
+          {items.slice(0,3).map((t,i) => (
+            <TestimonialCard
+              key={i}
+              t={t}
+              dark
+              accent={pal.accent}
+              secondary={pal.secondary}
+              border={pal.border}
+              textMuted={pal.textMuted}
+            />
+          ))}
         </div>
       </div>
     );
@@ -1184,9 +1599,26 @@ function TestimonialGridBlock({ block: b, onUpdate: u }: { block: Block; onUpdat
       <div>
         {b.headline && <E v={b.headline} p="Testimonials headline..." onChange={v=>u({headline:v})} style={{ fontFamily:DISPLAY, fontSize:28, fontWeight:700, textTransform:'uppercase', color:pal.dark, display:'block', marginBottom:28, letterSpacing:'0.02em' }} />}
         <div style={{ display:'grid', gridTemplateColumns:'1.6fr 1fr', gap:16, alignItems:'start' }}>
-          <Card t={first} />
+          <TestimonialCard
+            t={first}
+            dark={false}
+            accent={pal.accent}
+            secondary={pal.secondary}
+            border={pal.border}
+            textMuted={pal.textMuted}
+          />
           <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
-            {rest.slice(0,2).map((t,i) => <Card key={i} t={t} />)}
+            {rest.slice(0,2).map((t,i) => (
+              <TestimonialCard
+                key={i}
+                t={t}
+                dark={false}
+                accent={pal.accent}
+                secondary={pal.secondary}
+                border={pal.border}
+                textMuted={pal.textMuted}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -1198,7 +1630,17 @@ function TestimonialGridBlock({ block: b, onUpdate: u }: { block: Block; onUpdat
     <div>
       {b.headline && <E v={b.headline} p="Testimonials headline..." onChange={v=>u({headline:v})} style={{ fontFamily:DISPLAY, fontSize:28, fontWeight:700, textTransform:'uppercase', color:pal.dark, display:'block', marginBottom:28, letterSpacing:'0.02em' }} />}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16 }}>
-        {items.slice(0,3).map((t,i) => <Card key={i} t={t} />)}
+        {items.slice(0,3).map((t,i) => (
+          <TestimonialCard
+            key={i}
+            t={t}
+            dark={false}
+            accent={pal.accent}
+            secondary={pal.secondary}
+            border={pal.border}
+            textMuted={pal.textMuted}
+          />
+        ))}
       </div>
     </div>
   );
@@ -1301,25 +1743,6 @@ function CountdownBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p:
   const fmt = (n: number) => String(n).padStart(2,'0');
   const urgent = secs < 300;
 
-  const Digit = ({ val, label }:{ val:string; label:string }) => (
-    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
-      <div style={{
-        background: urgent ? '#dc2626' : '#1a1a2e',
-        color:'#FFF', fontFamily:'monospace', fontSize:'clamp(36px,6vw,64px)', fontWeight:900,
-        width:'clamp(72px,10vw,96px)', height:'clamp(72px,10vw,96px)',
-        display:'flex', alignItems:'center', justifyContent:'center',
-        borderRadius:8, boxShadow: urgent ? '0 6px 0 #991b1b' : '0 6px 0 #0a0a14',
-        border:'2px solid rgba(255,255,255,0.1)',
-        transition:'background 0.5s',
-      }}>{val}</div>
-      <span style={{ fontFamily:SANS, fontSize:10, fontWeight:700, letterSpacing:'0.14em', textTransform:'uppercase', color:'rgba(255,255,255,0.45)' }}>{label}</span>
-    </div>
-  );
-
-  const Sep = () => (
-    <div style={{ color:'#FFF', fontFamily:'monospace', fontSize:'clamp(28px,4vw,48px)', fontWeight:900, marginBottom:24, opacity:0.6 }}>:</div>
-  );
-
   return (
     <div style={{
       background:'linear-gradient(160deg, #0f0c29 0%, #1a1a2e 100%)',
@@ -1334,10 +1757,15 @@ function CountdownBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p:
         letterSpacing:'0.08em', display:'block', marginBottom:24,
       }} />
       <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:12, flexWrap:'wrap' }}>
-        {h > 0 && <><Digit val={fmt(h)} label="Hours" /><Sep /></>}
-        <Digit val={fmt(m)} label="Minutes" />
+        {h > 0 && (
+          <>
+            <Digit val={fmt(h)} label="Hours" urgent={urgent} accent={pal.accent} />
+            <Sep />
+          </>
+        )}
+        <Digit val={fmt(m)} label="Minutes" urgent={urgent} accent={pal.accent} />
         <Sep />
-        <Digit val={fmt(s)} label="Seconds" />
+        <Digit val={fmt(s)} label="Seconds" urgent={urgent} accent={pal.accent} />
       </div>
     </div>
   );
@@ -1614,37 +2042,6 @@ function OptinFormBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p:
   const inputFocus = (e: React.FocusEvent<HTMLInputElement>) => { e.target.style.borderColor=pal.accent; e.target.style.boxShadow=`0 0 0 3px ${pal.accent}18`; };
   const inputBlur = (e: React.FocusEvent<HTMLInputElement>) => { e.target.style.borderColor=pal.border; e.target.style.boxShadow='none'; };
 
-  const SuccessCard = () => (
-    <div style={{ borderRadius:20,padding:'40px 32px',textAlign:'center',background:`linear-gradient(135deg,${pal.accent}10,${pal.secondary}08)`,border:`2px solid ${pal.accent}30` }}>
-      <div style={{ width:64,height:64,borderRadius:'50%',margin:'0 auto 20px',background:`linear-gradient(135deg,${pal.accent},${pal.secondary})`,display:'flex',alignItems:'center',justifyContent:'center',boxShadow:`0 8px 32px ${pal.accent}50` }}>
-        <Check size={28} color="#fff" strokeWidth={3} />
-      </div>
-      <p style={{ fontFamily:DISPLAY,fontSize:22,fontWeight:800,color:'#0a0a0a',marginBottom:10 }}>You&apos;re in.</p>
-      <p style={{ fontFamily:SANS,fontSize:14,color:pal.textMuted,lineHeight:1.7 }}>Check your inbox — your free guide is on its way.</p>
-    </div>
-  );
-
-  const FormFields = () => (
-    <div>
-      <div style={{ marginBottom:14 }}>
-        <label style={{ fontFamily:SANS,fontSize:12,fontWeight:700,color:'#0a0a0a',display:'block',marginBottom:6 }}>First Name</label>
-        <input type="text" value={name} onChange={e=>setName(e.target.value)} onClick={e=>e.stopPropagation()} placeholder="Your first name" style={inputStyle} onFocus={inputFocus} onBlur={inputBlur} />
-      </div>
-      <div style={{ marginBottom:20 }}>
-        <label style={{ fontFamily:SANS,fontSize:12,fontWeight:700,color:'#0a0a0a',display:'block',marginBottom:6 }}>Email Address</label>
-        <input type="email" value={email} onChange={e=>setEmail(e.target.value)} onClick={e=>e.stopPropagation()} placeholder="your@email.com" style={inputStyle} onFocus={inputFocus} onBlur={inputBlur} />
-      </div>
-      <button onClick={handleSubmit} style={{ width:'100%',padding:'18px 24px',border:'none',borderRadius:12,background:`linear-gradient(135deg,${pal.accent},${pal.secondary})`,color:'#fff',fontFamily:SANS,fontWeight:900,fontSize:16,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:10,boxShadow:`0 4px 0 ${pal.dark},0 12px 40px ${pal.accent}50`,letterSpacing:'-0.01em' }}>
-        <E v={b.cta||'Send Me the Free Guide'} p="Button text..." onChange={v=>u({cta:v})} style={{ color:'#fff' }} />
-        <ArrowRight size={18} />
-      </button>
-      <div style={{ display:'flex',alignItems:'center',justifyContent:'center',gap:6,marginTop:14 }}>
-        <Lock size={11} color={pal.textMuted} />
-        <span style={{ fontFamily:SANS,fontSize:11,color:pal.textMuted }}>{safeStr(b.body)||'No spam. Unsubscribe anytime. 100% free.'}</span>
-      </div>
-    </div>
-  );
-
   // ── centered: single-column centered ──────────────────────────────────
   if (variant === 'centered') {
     return (
@@ -1658,7 +2055,26 @@ function OptinFormBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p:
         <div style={{ background:pal.surface,padding:'52px 72px',maxWidth:600,margin:'0 auto' }}>
           <E v={b.headline||'Get Instant Access'} p="Form headline..." onChange={v=>u({headline:v})} style={{ fontFamily:DISPLAY,fontSize:'clamp(24px,3vw,36px)',fontWeight:800,lineHeight:1.15,letterSpacing:'-0.025em',color:'#0a0a0a',display:'block',marginBottom:12,textAlign:'center' }} />
           <E v={b.subheadline||'Join 47,000+ subscribers who get exclusive strategies.'} p="Subheadline..." onChange={v=>u({subheadline:v})} style={{ fontFamily:SANS,fontSize:15,lineHeight:1.75,color:pal.textMuted,display:'block',marginBottom:32,textAlign:'center' }} />
-          {submitted ? <SuccessCard /> : <FormFields />}
+          {submitted ? (
+            <SuccessCard accent={pal.accent} secondary={pal.secondary} />
+          ) : (
+            <FormFields
+              cta={b.cta}
+              body={b.body}
+              onUpdate={u}
+              email={email}
+              setEmail={setEmail}
+              name={name}
+              setName={setName}
+              handleSubmit={handleSubmit}
+              inputStyle={inputStyle}
+              inputFocus={inputFocus}
+              inputBlur={inputBlur}
+              accent={pal.accent}
+              secondary={pal.secondary}
+              textMuted={pal.textMuted}
+            />
+          )}
           <div style={{ display:'flex',justifyContent:'center',gap:24,marginTop:28,paddingTop:24,borderTop:`1px solid ${pal.border}` }}>
             {['47,283 subscribers','4.9 / 5 rating','Zero spam'].map((item,i) => (
               <div key={i} style={{ display:'flex',alignItems:'center',gap:6 }}>
@@ -1692,26 +2108,31 @@ function OptinFormBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p:
             </div>
           </div>
           <div style={{ padding:'52px 48px',background:'rgba(255,255,255,0.04)',borderLeft:'1px solid rgba(255,255,255,0.07)' }}>
-            {submitted ? <SuccessCard /> : (
-              <div>
-                <p style={{ fontFamily:SANS,fontSize:12,fontWeight:800,letterSpacing:'0.1em',textTransform:'uppercase',color:pal.accent,marginBottom:20 }}>Get Free Instant Access</p>
-                <div style={{ marginBottom:14 }}>
-                  <label style={{ fontFamily:SANS,fontSize:12,fontWeight:700,color:'rgba(255,255,255,0.7)',display:'block',marginBottom:6 }}>First Name</label>
-                  <input type="text" value={name} onChange={e=>setName(e.target.value)} onClick={e=>e.stopPropagation()} placeholder="Your first name" style={{ ...inputStyle,background:'rgba(255,255,255,0.07)',border:'1.5px solid rgba(255,255,255,0.12)',color:'#fff' }} onFocus={inputFocus} onBlur={inputBlur} />
-                </div>
-                <div style={{ marginBottom:20 }}>
-                  <label style={{ fontFamily:SANS,fontSize:12,fontWeight:700,color:'rgba(255,255,255,0.7)',display:'block',marginBottom:6 }}>Email Address</label>
-                  <input type="email" value={email} onChange={e=>setEmail(e.target.value)} onClick={e=>e.stopPropagation()} placeholder="your@email.com" style={{ ...inputStyle,background:'rgba(255,255,255,0.07)',border:'1.5px solid rgba(255,255,255,0.12)',color:'#fff' }} onFocus={inputFocus} onBlur={inputBlur} />
-                </div>
-                <button onClick={handleSubmit} style={{ width:'100%',padding:'18px 24px',border:'none',borderRadius:12,background:`linear-gradient(135deg,${pal.accent},${pal.secondary})`,color:'#fff',fontFamily:SANS,fontWeight:900,fontSize:16,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:10,boxShadow:`0 4px 0 rgba(0,0,0,0.4),0 12px 40px ${pal.accent}50` }}>
-                  <E v={b.cta||'Send Me the Free Guide'} p="Button..." onChange={v=>u({cta:v})} style={{ color:'#fff' }} />
-                  <ArrowRight size={18} />
-                </button>
-                <div style={{ display:'flex',alignItems:'center',justifyContent:'center',gap:6,marginTop:14 }}>
-                  <Lock size={11} color='rgba(255,255,255,0.3)' />
-                  <span style={{ fontFamily:SANS,fontSize:11,color:'rgba(255,255,255,0.3)' }}>{safeStr(b.body)||'No spam. Unsubscribe anytime.'}</span>
-                </div>
-              </div>
+            {submitted ? (
+              <SuccessCard accent={pal.accent} secondary={pal.secondary} />
+            ) : (
+              <FormFields
+                cta={b.cta}
+                body={b.body}
+                onUpdate={u}
+                email={email}
+                setEmail={setEmail}
+                name={name}
+                setName={setName}
+                handleSubmit={handleSubmit}
+                inputStyle={{
+                  ...inputStyle,
+                  background: 'rgba(255,255,255,0.07)',
+                  border: '1.5px solid rgba(255,255,255,0.12)',
+                  color: '#fff',
+                }}
+                inputFocus={inputFocus}
+                inputBlur={inputBlur}
+                accent={pal.accent}
+                secondary={pal.secondary}
+                textMuted={pal.textMuted}
+                dark
+              />
             )}
           </div>
         </div>
@@ -1743,7 +2164,26 @@ function OptinFormBlock({ block: b, onUpdate: u }: { block: Block; onUpdate: (p:
         </div>
         <div style={{ background:pal.surfaceAlt,borderRadius:20,padding:'36px 32px',boxShadow:`0 0 0 1px ${pal.border},0 16px 48px rgba(0,0,0,0.07)` }}>
           <p style={{ fontFamily:SANS,fontSize:12,fontWeight:800,letterSpacing:'0.1em',textTransform:'uppercase',color:pal.accent,marginBottom:20 }}>Get Free Instant Access</p>
-          {submitted ? <SuccessCard /> : <FormFields />}
+          {submitted ? (
+            <SuccessCard accent={pal.accent} secondary={pal.secondary} />
+          ) : (
+            <FormFields
+              cta={b.cta}
+              body={b.body}
+              onUpdate={u}
+              email={email}
+              setEmail={setEmail}
+              name={name}
+              setName={setName}
+              handleSubmit={handleSubmit}
+              inputStyle={inputStyle}
+              inputFocus={inputFocus}
+              inputBlur={inputBlur}
+              accent={pal.accent}
+              secondary={pal.secondary}
+              textMuted={pal.textMuted}
+            />
+          )}
         </div>
       </div>
       <div style={{ background:pal.surfaceAlt,borderTop:`1px solid ${pal.border}`,padding:'16px 48px',display:'flex',alignItems:'center',justifyContent:'center',gap:32 }}>

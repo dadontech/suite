@@ -16,26 +16,47 @@ import { ImageBlock } from "./ImageBlock";
 import { VideoBlock } from "./VideoBlock";
 import { SpacerBlock } from "./SpacerBlock";
 
-const map = {
-  hero: HeroBlock,
-  headline: HeadlineBlock,
-  subheading: SubheadingBlock,
-  paragraph: ParagraphBlock,
-  button: ButtonBlock,
-  bullets: BulletsBlock,
-  stars: StarsBlock,
-  callout: CalloutBlock,
-  guarantee: GuaranteeBlock,
-  testimonial: TestimonialBlock,
-  countdown: CountdownBlock,
-  faq: FaqBlock,
-  divider: DividerBlock,
-  image: ImageBlock,
-  video: VideoBlock,
-  spacer: SpacerBlock,
+// Common props that all block components receive
+interface BlockComponentProps {
+  block: Record<string, unknown>;
+  onChange: (update: Record<string, unknown>) => void;
+  preview?: boolean;
+}
+
+// Map of block types to components – we know they accept BlockComponentProps
+const map: Record<string, React.ComponentType<BlockComponentProps>> = {
+  hero: HeroBlock as React.ComponentType<BlockComponentProps>,
+  headline: HeadlineBlock as React.ComponentType<BlockComponentProps>,
+  subheading: SubheadingBlock as React.ComponentType<BlockComponentProps>,
+  paragraph: ParagraphBlock as React.ComponentType<BlockComponentProps>,
+  button: ButtonBlock as React.ComponentType<BlockComponentProps>,
+  bullets: BulletsBlock as React.ComponentType<BlockComponentProps>,
+  stars: StarsBlock as React.ComponentType<BlockComponentProps>,
+  callout: CalloutBlock as React.ComponentType<BlockComponentProps>,
+  guarantee: GuaranteeBlock as React.ComponentType<BlockComponentProps>,
+  testimonial: TestimonialBlock as React.ComponentType<BlockComponentProps>,
+  countdown: CountdownBlock as React.ComponentType<BlockComponentProps>,
+  faq: FaqBlock as React.ComponentType<BlockComponentProps>,
+  divider: DividerBlock as React.ComponentType<BlockComponentProps>,
+  image: ImageBlock as React.ComponentType<BlockComponentProps>,
+  video: VideoBlock as React.ComponentType<BlockComponentProps>,
+  spacer: SpacerBlock as React.ComponentType<BlockComponentProps>,
 };
 
-export const RenderBlock = ({ block, onChange, preview }) => {
-  const C = map[block.type];
-  return C ? <C block={block} onChange={onChange} preview={preview} /> : <div style={{ padding: 12, fontSize: 12, color: "#ccc" }}>Unknown: {block.type}</div>;
+interface RenderBlockProps {
+  block: { type: string; [key: string]: unknown };
+  onChange: (update: Record<string, unknown>) => void;
+  preview?: boolean;
+}
+
+export const RenderBlock: React.FC<RenderBlockProps> = ({ block, onChange, preview }) => {
+  const Component = map[block.type];
+  if (!Component) {
+    return (
+      <div style={{ padding: 12, fontSize: 12, color: "#ccc" }}>
+        Unknown: {block.type}
+      </div>
+    );
+  }
+  return <Component block={block} onChange={onChange} preview={preview} />;
 };
