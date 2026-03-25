@@ -3,10 +3,10 @@
 import { motion } from "framer-motion";
 import { useInView } from "@/app/landing-page/hooks/useInView";
 import {
-  Twitter,
-  Instagram,
-  Linkedin,
-  Github,
+  X,
+  Camera,
+  Link2,
+  GitBranch,
   Mail,
   MapPin,
   Phone,
@@ -50,14 +50,33 @@ export default function Footer() {
   };
 
   const socialLinks = [
-    { icon: <Twitter size={18} />, href: "https://twitter.com/amsuite", label: "Twitter" },
-    { icon: <Instagram size={18} />, href: "https://instagram.com/amsuite", label: "Instagram" },
-    { icon: <Linkedin size={18} />, href: "https://linkedin.com/company/amsuite", label: "LinkedIn" },
-    { icon: <Github size={18} />, href: "https://github.com/amsuite", label: "GitHub" },
+    {
+      icon: <X size={18} />,
+      href: "https://twitter.com/amsuite",
+      label: "Twitter",
+    },
+    {
+      icon: <Camera size={18} />,
+      href: "https://instagram.com/amsuite",
+      label: "Instagram",
+    },
+    {
+      icon: <Link2 size={18} />,
+      href: "https://linkedin.com/company/amsuite",
+      label: "LinkedIn",
+    },
+    {
+      icon: <GitBranch size={18} />,
+      href: "https://github.com/amsuite",
+      label: "GitHub",
+    },
   ];
 
   return (
-    <footer ref={ref} className="relative bg-white pt-24 pb-12 overflow-hidden text-[#6B5E5E] border-t border-[#006E74]/10">
+    <footer
+      ref={ref}
+      className="relative bg-white pt-24 pb-12 overflow-hidden text-[#6B5E5E] border-t border-[#006E74]/10"
+    >
       {/* 1. BACKGROUND DESIGN ELEMENTS */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#6B5E5E10_1px,transparent_1px),linear-gradient(to_bottom,#6B5E5E10_1px,transparent_1px)] bg-[size:80px_80px] opacity-20 pointer-events-none" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-[#F35D2C]/5 blur-[120px] rounded-full pointer-events-none" />
@@ -90,7 +109,7 @@ export default function Footer() {
       <div className="relative z-10 max-w-7xl mx-auto px-6">
         {/* 2. MASSIVE BRAND SECTION */}
         <div className="mb-24">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 50 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
@@ -98,11 +117,15 @@ export default function Footer() {
           >
             Amsuite
           </motion.h2>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 -mt-12 lg:-mt-20 px-2">
             <div>
               <p className="text-xl md:text-2xl text-[#6B5E5E]/70 font-light max-w-md leading-relaxed">
-                Turn any affiliate link into a <span className="text-[#6B5E5E] font-medium">high-converting page</span> in seconds. AI-powered, SEO-optimized.
+                Turn any affiliate link into a{" "}
+                <span className="text-[#6B5E5E] font-medium">
+                  high-converting page
+                </span>{" "}
+                in seconds. AI-powered, SEO-optimized.
               </p>
             </div>
             <div className="flex flex-col items-start lg:items-end justify-end gap-6">
@@ -126,15 +149,19 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-24 border-y border-[#006E74]/10 py-16">
           {Object.entries(footerLinks).map(([title, links], idx) => (
             <div key={title}>
-              <h4 className="text-[#F35D2C] text-[10px] font-bold uppercase tracking-[0.3em] mb-8">{title}</h4>
+              <h4 className="text-[#F35D2C] text-[10px] font-bold uppercase tracking-[0.3em] mb-8">
+                {title}
+              </h4>
               <ul className="space-y-4">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <Link 
-                      href={link.href} 
+                    <Link
+                      href={link.href}
                       className="text-[#6B5E5E]/70 hover:text-[#F35D2C] transition-colors text-sm font-medium flex items-center group"
                     >
-                      <span className="w-0 group-hover:w-4 overflow-hidden transition-all duration-300 text-[#F35D2C]">—</span>
+                      <span className="w-0 group-hover:w-4 overflow-hidden transition-all duration-300 text-[#F35D2C]">
+                        —
+                      </span>
                       {link.label}
                     </Link>
                   </li>
@@ -148,18 +175,23 @@ export default function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center pb-12">
           {/* Contact Details */}
           <div className="flex flex-col gap-4">
-             <div className="flex items-center gap-3 text-sm text-[#6B5E5E]/70">
-                <div className="w-8 h-8 rounded-full bg-[#006E74]/10 flex items-center justify-center text-[#006E74]">
-                  <Mail size={14} />
-                </div>
-                <a href="mailto:support@amsuite.com" className="hover:text-[#F35D2C] transition-colors">support@amsuite.com</a>
-             </div>
-             <div className="flex items-center gap-3 text-sm text-[#6B5E5E]/70">
-                <div className="w-8 h-8 rounded-full bg-[#006E74]/10 flex items-center justify-center text-[#006E74]">
-                  <MapPin size={14} />
-                </div>
-                <span>San Francisco, CA — Global HQ</span>
-             </div>
+            <div className="flex items-center gap-3 text-sm text-[#6B5E5E]/70">
+              <div className="w-8 h-8 rounded-full bg-[#006E74]/10 flex items-center justify-center text-[#006E74]">
+                <Mail size={14} />
+              </div>
+              <a
+                href="mailto:support@amsuite.com"
+                className="hover:text-[#F35D2C] transition-colors"
+              >
+                support@amsuite.com
+              </a>
+            </div>
+            <div className="flex items-center gap-3 text-sm text-[#6B5E5E]/70">
+              <div className="w-8 h-8 rounded-full bg-[#006E74]/10 flex items-center justify-center text-[#006E74]">
+                <MapPin size={14} />
+              </div>
+              <span>San Francisco, CA — Global HQ</span>
+            </div>
           </div>
 
           {/* Newsletter (Command Bar Style) */}

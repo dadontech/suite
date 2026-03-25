@@ -153,13 +153,13 @@ export default function NavBar() {
               href="/login" 
               className="px-6 py-2.5 rounded-full border border-[#006E74] text-[#006E74] text-[15px] font-medium hover:bg-[#006E74]/5 transition-colors"
             >
-              Log in
+              Sign In
             </Link>
             <Link
               href="/signup"
               className="bg-[#F35D2C] text-white px-6 py-2.5 rounded-full text-[15px] font-medium hover:bg-opacity-90 transition"
             >
-              Sign up
+              Sign Up
             </Link>
           </div>
 

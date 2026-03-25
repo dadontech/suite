@@ -7,7 +7,7 @@ import {
   ArrowLeft, ExternalLink, Copy, Check, GitBranch, Mail,
   FileText, Layers, DollarSign, TrendingUp, Video, Zap,
   BarChart2, Target, Gift, HelpCircle, UserCheck, RotateCcw,
-  Edit2, Trash2, Eye, Twitter, Linkedin, Facebook,
+  Edit2, Trash2, Eye, X, Link2, Share2,
   Globe, Calendar, RefreshCw, Loader2, AlertCircle,
   Star, ChevronDown, ChevronUp, Play, Sparkles, Tag,
 } from "lucide-react";
@@ -796,9 +796,9 @@ export default function CampaignDetail() {
                             s.platform === "Twitter/X" ? "bg-black text-white" :
                             s.platform === "LinkedIn" ? "bg-[#0A66C2] text-white" :
                             "bg-[#1877F2] text-white"}`}>
-                            {s.platform === "Twitter/X" && <Twitter size={10} />}
-                            {s.platform === "LinkedIn" && <Linkedin size={10} />}
-                            {s.platform === "Facebook" && <Facebook size={10} />}
+                            {s.platform === "Twitter/X" && <X size={10} />}
+                            {s.platform === "LinkedIn" && <Link2 size={10} />}
+                            {s.platform === "Facebook" && <Share2 size={10} />}
                             {s.platform}
                           </div>
                           <button onClick={() => cp(s.content, `s${i}`)}

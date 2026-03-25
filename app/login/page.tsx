@@ -1,6 +1,6 @@
 
 import ScrollProgressIndicator from "@/app/components/ScrollProgressIndicator";
-import Login from "@/components/login/login";
+import Login from "@/components/signin/signin";
 
 
 

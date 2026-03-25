@@ -9,7 +9,7 @@ import {
   BookOpen, List, Scale, FileSearch, TrendingUp, Video,
   Zap, BarChart2, ArrowRight, Star, Clock, DollarSign,
   Target, Gift, PlayCircle, HelpCircle, Layers,
-  MessageSquare, RefreshCw, Twitter, Linkedin, Facebook,
+  MessageSquare, RefreshCw, X,
   Award, UserCheck, RotateCcw, ChevronUp,
 } from "lucide-react";
 
@@ -1025,9 +1025,9 @@ export default function CreateCampaign() {
                       snippet.platform === 'LinkedIn' ? 'bg-[#0A66C2] text-white' :
                       'bg-[#1877F2] text-white'
                     }`}>
-                      {snippet.platform === 'Twitter/X' && <Twitter size={12} />}
-                      {snippet.platform === 'LinkedIn' && <Linkedin size={12} />}
-                      {snippet.platform === 'Facebook' && <Facebook size={12} />}
+                      {snippet.platform === 'Twitter/X' && <X size={12} />}
+                      {snippet.platform === 'LinkedIn' && <Link2 size={12} />}
+                      {snippet.platform === 'Facebook' && <Share2 size={12} />}
                       {snippet.platform}
                     </div>
                     <button

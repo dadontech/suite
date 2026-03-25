@@ -5,13 +5,13 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Eye, EyeOff, Zap, CheckCircle2 } from "lucide-react";
 
-export default function SignupPage() {
+export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({ email: "", password: "", remember: false });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Signup", formData);
+    console.log("Login", formData);
   };
 
   return (
@@ -36,18 +36,18 @@ export default function SignupPage() {
         <div className="flex-1 flex items-center justify-center px-8 md:px-16">
           <div className="w-full max-w-md">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold tracking-tight mb-2 text-[#6B5E5E]">Get Started Now</h1>
-              <p className="text-[#6B5E5E]/70 text-sm">Join thousands of affiliates turning links into revenue.</p>
+              <h1 className="text-3xl font-bold tracking-tight mb-2 text-[#6B5E5E]">Welcome Back</h1>
+              <p className="text-[#6B5E5E]/70 text-sm">Sign in to your affiliate dashboard.</p>
             </div>
 
-            {/* Social Signup */}
+            {/* Social Login */}
             <div className="flex flex-col gap-4 mb-8">
               <button className="w-full flex items-center justify-center gap-2 border border-[#006E74]/20 py-2.5 rounded-xl text-sm font-medium hover:bg-[#006E74]/5 transition-colors text-[#6B5E5E]">
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                 </svg>
-                Sign up with Google
+                Sign in with Google
               </button>
             </div>
 
@@ -57,18 +57,6 @@ export default function SignupPage() {
             </div>
 
             <form className="space-y-5" onSubmit={handleSubmit}>
-              <div className="space-y-1.5">
-                <label className="text-sm font-semibold text-[#6B5E5E]">Name</label>
-                <input 
-                  type="text" 
-                  placeholder="Enter your name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
-                  className="w-full border border-[#006E74]/20 rounded-2xl px-4 py-3 text-sm text-[#6B5E5E] focus:outline-none focus:ring-2 focus:ring-[#F35D2C]/30 focus:border-transparent transition-all bg-white placeholder-[#6B5E5E]/30"
-                />
-              </div>
-
               <div className="space-y-1.5">
                 <label className="text-sm font-semibold text-[#6B5E5E]">Email</label>
                 <input 
@@ -99,13 +87,28 @@ export default function SignupPage() {
                 </div>
               </div>
 
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 text-sm text-[#6B5E5E]/80">
+                  <input 
+                    type="checkbox" 
+                    checked={formData.remember}
+                    onChange={(e) => setFormData({ ...formData, remember: e.target.checked })}
+                    className="accent-[#F35D2C]"
+                  />
+                  Remember me
+                </label>
+                <Link href="/forgot-password" className="text-sm text-[#006E74] hover:text-[#F35D2C] transition-colors">
+                  Forgot password?
+                </Link>
+              </div>
+
               <button type="submit" className="w-full bg-[#F35D2C] hover:bg-opacity-90 text-white font-semibold py-3.5 rounded-2xl transition-all shadow-md active:scale-[0.99] mt-2">
-                Sign Up
+                Sign In
               </button>
             </form>
 
             <p className="text-center text-sm text-[#6B5E5E]/70 mt-8">
-              Already have an account? <Link href="/login" className="text-[#F35D2C] font-semibold hover:underline">Sign In</Link>
+              Don&apos;t have an account? <Link href="/signup" className="text-[#F35D2C] font-semibold hover:underline">Sign Up</Link>
             </p>
           </div>
         </div>
