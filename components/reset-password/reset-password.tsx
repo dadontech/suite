@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -28,11 +29,19 @@ export default function ResetPasswordPage() {
   const matches  = password === confirm && confirm.length > 0;
   const canSubmit = allMet && matches;
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!canSubmit) return;
-    setSubmitted(true);
-  };
+
+const searchParams = useSearchParams();
+const token = searchParams.get("token");
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  const res = await fetch("/api/auth/reset-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, password }),
+  });
+  if (res.ok) setSubmitted(true);
+};
 
   return (
     <div className="min-h-screen bg-white text-[#6B5E5E] flex font-sans">

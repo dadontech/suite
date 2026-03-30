@@ -211,7 +211,7 @@ export default function CampaignDetail() {
               {[
                 { label: "Pages", value: fm.pages.length, icon: GitBranch },
                 { label: "Emails", value: emails.length || "—", icon: Mail },
-                { label: "Words", value: campaign.wordCount.replace(" words", ""), icon: FileText },
+                { label: "Words", value: campaign.wordCount?.replace(" words", "") ?? "—", icon: FileText },
               ].map((s, i) => (
                 <div key={i} className="flex flex-col items-center justify-center px-5 py-3.5 rounded-2xl border border-black/7 bg-white min-w-[80px]"
                   style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.04)" }}>
@@ -419,7 +419,7 @@ export default function CampaignDetail() {
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { label: "Keyword", value: campaign.keyword },
-                  { label: "Tone", value: campaign.tone.split("(")[0].trim() },
+                  { label: "Tone", value: campaign.tone?.split("(")[0].trim() ?? "—" },
                   { label: "Word Count", value: campaign.wordCount },
                   { label: "Content Type", value: campaign.contentType },
                 ].map((item, i) => (
